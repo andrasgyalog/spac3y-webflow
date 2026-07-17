@@ -1,0 +1,44 @@
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 2: MOODBOARD (static grid, no JS)           -->
+<!-- Self-contained. Paste into a Webflow Embed block, or rebuild -->
+<!-- later with native Webflow Image + Grid elements.            -->
+<!-- Requires: assets/moodboard-1.jpg ... moodboard-5.jpg        -->
+<!-- ============================================================= -->
+
+<section class="spacey-moodboard">
+  <div class="spacey-moodboard__inner">
+    <div class="spacey-moodboard__grid">
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spacey-moodboard{ background:#05060a; padding:clamp(40px,7vw,96px) 0; border-top:1px solid rgba(255,255,255,.12); }
+  .spacey-moodboard__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+  .spacey-moodboard__grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:clamp(10px,1.4vw,20px);
+  }
+  .spacey-moodboard__cell{ margin:0; overflow:hidden; border-radius:12px; background:#0c0e14; }
+  .spacey-moodboard__cell img{
+    display:block; width:100%; height:100%;
+    aspect-ratio:4/3;                 /* consistent ratio across all cells */
+    object-fit:cover;                 /* crop instead of distort */
+    transition:transform .5s ease;
+  }
+  .spacey-moodboard__cell:hover img{ transform:scale(1.03); }
+
+  /* Let the 5th image span two columns so the grid stays balanced. */
+  .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+
+  @media (max-width:720px){
+    .spacey-moodboard__grid{ grid-template-columns:repeat(2,1fr); }
+    .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+  }
+</style>

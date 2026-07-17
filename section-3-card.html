@@ -1,0 +1,109 @@
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 3: SAMPLE CARD (AR/VR & 3D) + FLICKER HOVER -->
+<!-- Self-contained. Paste into a Webflow Embed block.           -->
+<!-- Requires: assets/card-ar-1.jpg (default), card-ar-2.jpg (hover)-->
+<!-- ============================================================= -->
+
+<section class="spacey-cardsec">
+  <div class="spacey-cardsec__stage">
+    <article class="spacey-card" id="spaceyCard" tabindex="0">
+      <div class="spacey-card__media">
+        <img class="spacey-card__img" id="spaceyCardImg" src="assets/card-ar-1.jpg" alt="AR/VR & 3D content sample">
+      </div>
+      <div class="spacey-card__body">
+        <span class="spacey-card__cat">AR/VR &amp; 3D Content</span>
+        <h3 class="spacey-card__title">Scaling Creative Production with AI Systems</h3>
+        <p class="spacey-card__desc">This case study examines how we improved customer support for a software company.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .spacey-cardsec{
+    /* A background so the glass blur has something to refract. */
+    background:
+      radial-gradient(120% 120% at 20% 10%, rgba(124,243,208,.18), transparent 55%),
+      radial-gradient(120% 120% at 85% 90%, rgba(120,140,255,.20), transparent 55%),
+      #070812;
+    padding:clamp(48px,9vw,120px) 20px;
+    display:flex; justify-content:center;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .spacey-cardsec__stage{ width:100%; max-width:380px; }
+
+  .spacey-card{
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    background:rgba(255,255,255,.06);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:
+      inset 0 0 24px rgba(255,255,255,.15),   /* soft white inner glow */
+      0 18px 50px rgba(0,0,0,.45);
+    transform:scale(1);
+    transition:transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease;
+    outline:none;
+  }
+  .spacey-card:hover, .spacey-card:focus-visible{
+    transform:scale(1.02);
+    box-shadow:
+      inset 0 0 30px rgba(255,255,255,.22),
+      0 0 34px rgba(124,243,208,.28),
+      0 22px 60px rgba(0,0,0,.5);
+  }
+
+  .spacey-card__media{ aspect-ratio:4/3; overflow:hidden; background:#0c0e14; }
+  .spacey-card__img{ display:block; width:100%; height:100%; object-fit:cover; }
+
+  .spacey-card__body{ padding:18px 20px 22px; color:#eef1f8; font-family:'Helvetica Neue',Arial,sans-serif; }
+  .spacey-card__cat{
+    display:inline-block; margin-bottom:10px;
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:#7cf3d0; font-weight:700;
+  }
+  .spacey-card__title{ margin:0 0 8px; font-size:19px; line-height:1.3; font-weight:700; }
+  .spacey-card__desc{ margin:0; font-size:13.5px; line-height:1.55; color:#aeb6c7; }
+</style>
+
+<script>
+(function(){
+  var IMG_DEFAULT = 'assets/card-ar-1.jpg';
+  var IMG_HOVER   = 'assets/card-ar-2.jpg';
+
+  var card = document.getElementById('spaceyCard');
+  var img  = document.getElementById('spaceyCardImg');
+
+  // Preload the hover frame so the flicker has no load flash.
+  var pre = new Image(); pre.src = IMG_HOVER;
+
+  var timers = [];
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+  function rand(min,max){ return min + Math.random()*(max-min); }
+
+  function flicker(){
+    clearTimers();
+    // Toggle default<->hover a few times with randomized gaps, then settle on hover.
+    var toggles = 3 + Math.floor(Math.random()*2);   // 3 or 4 flickers
+    var t = 0, showHover = true;
+    for(var i=0;i<toggles;i++){
+      (function(src){
+        timers.push(setTimeout(function(){ img.src = src; }, t));
+      })(showHover ? IMG_HOVER : IMG_DEFAULT);
+      showHover = !showHover;
+      t += rand(40,180);
+    }
+    // Settle: hold on the hover image.
+    timers.push(setTimeout(function(){ img.src = IMG_HOVER; }, t));
+  }
+
+  function reset(){ clearTimers(); img.src = IMG_DEFAULT; }
+
+  card.addEventListener('mouseenter', flicker);
+  card.addEventListener('mouseleave', reset);
+  card.addEventListener('focus', flicker);
+  card.addEventListener('blur', reset);
+})();
+</script>

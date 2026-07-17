@@ -1,0 +1,140 @@
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 1: HERO SCROLL ANIMATION                    -->
+<!-- Self-contained. Paste into a Webflow Embed block.            -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v1/assets/frames/frame_001.webp ... frame_125.webp    -->
+<!-- ============================================================= -->
+
+<section class="spacey-hero" id="spaceyHero">
+  <!-- Scroll track: its height defines how much scroll distance the scrub uses -->
+  <div class="spacey-hero__track" id="spaceyHeroTrack">
+    <!-- Pinned viewport -->
+    <div class="spacey-hero__sticky">
+      <canvas class="spacey-hero__canvas" id="spaceyHeroCanvas"></canvas>
+
+      <!-- Loading state (hidden once all frames are decoded) -->
+      <div class="spacey-hero__loading" id="spaceyHeroLoading">
+        <div class="spacey-hero__spinner"></div>
+        <div class="spacey-hero__loadtxt"><span id="spaceyHeroPct">0</span>%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spacey-hero{ position: relative; background:#05060a; }
+  /* Height = number of extra viewports of scroll used to scrub. */
+  .spacey-hero__track{ position: relative; height: 360vh; }
+  .spacey-hero__sticky{
+    position: sticky; top: 0;
+    height: 100vh; width: 100%;
+    overflow: hidden;
+    background:#05060a;
+  }
+  .spacey-hero__canvas{ display:block; width:100%; height:100%; }
+
+  /* Loading overlay */
+  .spacey-hero__loading{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    background:#05060a; color:#e8ecf5;
+    font-family:'Helvetica Neue',Arial,sans-serif; letter-spacing:.18em; font-size:14px;
+    transition:opacity .5s ease; z-index:3;
+  }
+  .spacey-hero__loading.is-hidden{ opacity:0; pointer-events:none; }
+  .spacey-hero__spinner{
+    width:34px; height:34px; border-radius:50%;
+    border:2px solid rgba(255,255,255,.15); border-top-color:#e8ecf5;
+    animation:spaceySpin .8s linear infinite;
+  }
+  @keyframes spaceySpin{ to{ transform:rotate(360deg); } }
+</style>
+
+<script>
+(function(){
+  var FRAME_COUNT = 125;
+  var pad = function(n){ return ('000'+n).slice(-3); };
+  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v1/assets/frames/frame_'+pad(i)+'.webp'; };
+
+  var canvas  = document.getElementById('spaceyHeroCanvas');
+  var ctx     = canvas.getContext('2d');
+  var track   = document.getElementById('spaceyHeroTrack');
+  var loading = document.getElementById('spaceyHeroLoading');
+  var pctEl   = document.getElementById('spaceyHeroPct');
+
+  var images = new Array(FRAME_COUNT);
+  var loaded = 0, ready = false;
+  var currentFrame = -1, targetFrame = 0;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    currentFrame = -1;          // force redraw at new size
+    if (ready) draw(targetFrame);
+  }
+
+  function drawCover(img){
+    var cw = canvas.width, ch = canvas.height;
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    if(!iw || !ih) return;
+    var scale = Math.max(cw/iw, ch/ih);
+    var dw = iw*scale, dh = ih*scale;
+    ctx.clearRect(0,0,cw,ch);
+    ctx.drawImage(img, (cw-dw)/2, (ch-dh)/2, dw, dh);
+  }
+
+  function draw(i){
+    var img = images[i];
+    if(img && img.complete){ drawCover(img); currentFrame = i; }
+  }
+
+  // Preload every frame; show % progress; reveal when done.
+  function preload(){
+    for(var i=0;i<FRAME_COUNT;i++){
+      (function(idx){
+        var img = new Image();
+        img.onload = img.onerror = function(){
+          loaded++;
+          pctEl.textContent = Math.round(loaded/FRAME_COUNT*100);
+          if(loaded===FRAME_COUNT){ onReady(); }
+        };
+        img.src = framePath(idx+1);
+        images[idx] = img;
+      })(i);
+    }
+  }
+
+  function onReady(){ ready = true; resize(); draw(0); loading.classList.add('is-hidden'); }
+
+  // Scroll progress (0..1) through the track.
+  function progress(){
+    var rect = track.getBoundingClientRect();
+    var dist = rect.height - window.innerHeight;
+    if(dist<=0) return 0;
+    var p = -rect.top / dist;
+    return p<0?0:(p>1?1:p);
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      try{
+        var p = progress();
+        targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
+        if(ready && targetFrame!==currentFrame) draw(targetFrame);
+      } finally {
+        ticking = false;   // always release the throttle, even if a draw throws
+      }
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){ dpr = Math.min(window.devicePixelRatio||1,2); resize(); onScroll(); });
+
+  preload();
+  onScroll();
+})();
+</script>

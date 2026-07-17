@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPAC3Y — Preview</title>
+
+<style>
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#05060a; }
+
+  /* ---- Section 1 : hero ---- */
+  .spacey-hero{ position: relative; background:#05060a; }
+  .spacey-hero__track{ position: relative; height: 360vh; }
+  .spacey-hero__sticky{ position: sticky; top:0; height:100vh; width:100%; overflow:hidden; background:#05060a; }
+  .spacey-hero__canvas{ display:block; width:100%; height:100%; }
+  .spacey-hero__loading{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    background:#05060a; color:#e8ecf5; font-family:'Helvetica Neue',Arial,sans-serif; letter-spacing:.18em; font-size:14px;
+    transition:opacity .5s ease; z-index:3;
+  }
+  .spacey-hero__loading.is-hidden{ opacity:0; pointer-events:none; }
+  .spacey-hero__spinner{ width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.15); border-top-color:#e8ecf5; animation:spaceySpin .8s linear infinite; }
+  @keyframes spaceySpin{ to{ transform:rotate(360deg); } }
+
+  /* ---- Section 2 : moodboard ---- */
+  .spacey-moodboard{ background:#05060a; padding:clamp(40px,7vw,96px) 0; border-top:1px solid rgba(255,255,255,.12); }
+  .spacey-moodboard__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+  .spacey-moodboard__grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(10px,1.4vw,20px); }
+  .spacey-moodboard__cell{ margin:0; overflow:hidden; border-radius:12px; background:#0c0e14; }
+  .spacey-moodboard__cell img{ display:block; width:100%; height:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .5s ease; }
+  .spacey-moodboard__cell:hover img{ transform:scale(1.03); }
+  .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+  @media (max-width:720px){
+    .spacey-moodboard__grid{ grid-template-columns:repeat(2,1fr); }
+    .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+  }
+
+  /* ---- Section 3 : card ---- */
+  .spacey-cardsec{
+    background:
+      radial-gradient(120% 120% at 20% 10%, rgba(124,243,208,.18), transparent 55%),
+      radial-gradient(120% 120% at 85% 90%, rgba(120,140,255,.20), transparent 55%),
+      #070812;
+    padding:clamp(48px,9vw,120px) 20px; display:flex; justify-content:center;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .spacey-cardsec__stage{ width:100%; max-width:380px; }
+  .spacey-card{
+    position:relative; border-radius:18px; overflow:hidden;
+    background:rgba(255,255,255,.06); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:inset 0 0 24px rgba(255,255,255,.15), 0 18px 50px rgba(0,0,0,.45);
+    transform:scale(1); transition:transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease; outline:none;
+  }
+  .spacey-card:hover, .spacey-card:focus-visible{
+    transform:scale(1.02);
+    box-shadow:inset 0 0 30px rgba(255,255,255,.22), 0 0 34px rgba(124,243,208,.28), 0 22px 60px rgba(0,0,0,.5);
+  }
+  .spacey-card__media{ aspect-ratio:4/3; overflow:hidden; background:#0c0e14; }
+  .spacey-card__img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .spacey-card__body{ padding:18px 20px 22px; color:#eef1f8; font-family:'Helvetica Neue',Arial,sans-serif; }
+  .spacey-card__cat{ display:inline-block; margin-bottom:10px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#7cf3d0; font-weight:700; }
+  .spacey-card__title{ margin:0 0 8px; font-size:19px; line-height:1.3; font-weight:700; }
+  .spacey-card__desc{ margin:0; font-size:13.5px; line-height:1.55; color:#aeb6c7; }
+</style>
+</head>
+<body>
+
+<!-- ================= SECTION 1 — HERO ================= -->
+<section class="spacey-hero" id="spaceyHero">
+  <div class="spacey-hero__track" id="spaceyHeroTrack">
+    <div class="spacey-hero__sticky">
+      <canvas class="spacey-hero__canvas" id="spaceyHeroCanvas"></canvas>
+      <div class="spacey-hero__loading" id="spaceyHeroLoading">
+        <div class="spacey-hero__spinner"></div>
+        <div class="spacey-hero__loadtxt"><span id="spaceyHeroPct">0</span>%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 2 — MOODBOARD ================= -->
+<section class="spacey-moodboard">
+  <div class="spacey-moodboard__inner">
+    <div class="spacey-moodboard__grid">
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECTION 3 — CARD ================= -->
+<section class="spacey-cardsec">
+  <div class="spacey-cardsec__stage">
+    <article class="spacey-card" id="spaceyCard" tabindex="0">
+      <div class="spacey-card__media">
+        <img class="spacey-card__img" id="spaceyCardImg" src="assets/card-ar-1.jpg" alt="AR/VR & 3D content sample">
+      </div>
+      <div class="spacey-card__body">
+        <span class="spacey-card__cat">AR/VR &amp; 3D Content</span>
+        <h3 class="spacey-card__title">Scaling Creative Production with AI Systems</h3>
+        <p class="spacey-card__desc">This case study examines how we improved customer support for a software company.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<script>
+/* ---------- SECTION 1 : hero scroll-scrub ---------- */
+(function(){
+  var FRAME_COUNT = 125;
+  var pad = function(n){ return ('000'+n).slice(-3); };
+  var framePath = function(i){ return 'assets/frames/frame_'+pad(i)+'.webp'; };
+
+  var canvas  = document.getElementById('spaceyHeroCanvas');
+  var ctx     = canvas.getContext('2d');
+  var track   = document.getElementById('spaceyHeroTrack');
+  var loading = document.getElementById('spaceyHeroLoading');
+  var pctEl   = document.getElementById('spaceyHeroPct');
+
+  var images = new Array(FRAME_COUNT);
+  var loaded = 0, ready = false;
+  var currentFrame = -1, targetFrame = 0;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    currentFrame = -1;
+    if (ready) draw(targetFrame);
+  }
+  function drawCover(img){
+    var cw = canvas.width, ch = canvas.height;
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    if(!iw || !ih) return;
+    var scale = Math.max(cw/iw, ch/ih);
+    var dw = iw*scale, dh = ih*scale;
+    ctx.clearRect(0,0,cw,ch);
+    ctx.drawImage(img, (cw-dw)/2, (ch-dh)/2, dw, dh);
+  }
+  function draw(i){ var img = images[i]; if(img && img.complete){ drawCover(img); currentFrame = i; } }
+
+  function preload(){
+    for(var i=0;i<FRAME_COUNT;i++){
+      (function(idx){
+        var img = new Image();
+        img.onload = img.onerror = function(){
+          loaded++;
+          pctEl.textContent = Math.round(loaded/FRAME_COUNT*100);
+          if(loaded===FRAME_COUNT){ onReady(); }
+        };
+        img.src = framePath(idx+1);
+        images[idx] = img;
+      })(i);
+    }
+  }
+  function onReady(){ ready = true; resize(); draw(0); loading.classList.add('is-hidden'); }
+
+  function progress(){
+    var rect = track.getBoundingClientRect();
+    var dist = rect.height - window.innerHeight;
+    if(dist<=0) return 0;
+    var p = -rect.top / dist;
+    return p<0?0:(p>1?1:p);
+  }
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      try{
+        var p = progress();
+        targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
+        if(ready && targetFrame!==currentFrame) draw(targetFrame);
+      } finally {
+        ticking = false;   // always release the throttle, even if a draw throws
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', function(){ dpr = Math.min(window.devicePixelRatio||1,2); resize(); onScroll(); });
+  preload();
+  onScroll();
+})();
+
+/* ---------- SECTION 3 : card flicker hover ---------- */
+(function(){
+  var IMG_DEFAULT = 'assets/card-ar-1.jpg';
+  var IMG_HOVER   = 'assets/card-ar-2.jpg';
+  var card = document.getElementById('spaceyCard');
+  var img  = document.getElementById('spaceyCardImg');
+  var pre = new Image(); pre.src = IMG_HOVER;
+
+  var timers = [];
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+  function rand(min,max){ return min + Math.random()*(max-min); }
+  function flicker(){
+    clearTimers();
+    var toggles = 3 + Math.floor(Math.random()*2);
+    var t = 0, showHover = true;
+    for(var i=0;i<toggles;i++){
+      (function(src){ timers.push(setTimeout(function(){ img.src = src; }, t)); })(showHover ? IMG_HOVER : IMG_DEFAULT);
+      showHover = !showHover;
+      t += rand(40,180);
+    }
+    timers.push(setTimeout(function(){ img.src = IMG_HOVER; }, t));
+  }
+  function reset(){ clearTimers(); img.src = IMG_DEFAULT; }
+  card.addEventListener('mouseenter', flicker);
+  card.addEventListener('mouseleave', reset);
+  card.addEventListener('focus', flicker);
+  card.addEventListener('blur', reset);
+})();
+</script>
+</body>
+</html>
