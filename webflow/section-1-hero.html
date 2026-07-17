@@ -1,7 +1,7 @@
 <!-- ============================================================= -->
 <!-- SPAC3Y — SECTION 1: HERO SCROLL ANIMATION                    -->
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
-<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v1/assets/frames/frame_001.webp ... frame_125.webp    -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v2/assets/frames/frame_001.webp ... frame_125.webp    -->
 <!-- ============================================================= -->
 
 <section class="spacey-hero" id="spaceyHero">
@@ -53,7 +53,7 @@
 (function(){
   var FRAME_COUNT = 125;
   var pad = function(n){ return ('000'+n).slice(-3); };
-  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v1/assets/frames/frame_'+pad(i)+'.webp'; };
+  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v2/assets/frames/frame_'+pad(i)+'.webp'; };
 
   var canvas  = document.getElementById('spaceyHeroCanvas');
   var ctx     = canvas.getContext('2d');
