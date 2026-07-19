@@ -756,11 +756,10 @@
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
 <!-- Requires: assets/tokens-loop.mp4  (seamless boomerang loop)  -->
 <!--                                                              -->
-<!-- Layout: giant title stretched edge-to-edge up to the white   -->
-<!-- partition, then a dashed rule, centred category, another     -->
-<!-- rule, then the supporting copy.                              -->
-<!-- The title font-size is computed in JS so each word fills the -->
-<!-- column exactly; re-measured on resize and on font swap.      -->
+<!-- Title size is pure CSS: container query units (cqw) tie the  -->
+<!-- font-size to the width of the text column, so each word      -->
+<!-- fills it without any JS measuring. Per-word values are tuned -->
+<!-- to the letter count — adjust them if the wording changes.    -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -780,10 +779,10 @@
 
       <div class="spacey-ccard__body">
 
-        <!-- EDIT: card title — stretched to the full column width -->
-        <h3 class="spacey-ccard__giant" id="spaceyGiant">
-          <span class="spacey-ccard__giantline">Tokenized</span>
-          <span class="spacey-ccard__giantline">Loyalty</span>
+        <!-- EDIT: card title — one word per row, sized to fill the column -->
+        <h3 class="spacey-ccard__giant">
+          <span class="spacey-ccard__giantline spacey-ccard__giantline--a">Tokenized</span>
+          <span class="spacey-ccard__giantline spacey-ccard__giantline--b">Loyalty</span>
         </h3>
 
         <div class="spacey-ccard__rule" aria-hidden="true"></div>
@@ -813,12 +812,17 @@
 
 <style>
   .spacey-clients{
-    --video-w:46%;                     /* width of the video panel */
+    --video-w:44%;                     /* width of the video panel */
+    position:relative;
     background:#05060a;
+    /* barely-there blue dot grid */
+    background-image:radial-gradient(rgba(91,110,245,.16) 1px, transparent 1px);
+    background-size:24px 24px;
+    background-position:0 0;
     padding:clamp(48px,8vw,110px) 0;
     border-top:1px solid rgba(255,255,255,.12);
   }
-  .spacey-clients__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+  .spacey-clients__inner{ position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
 
   .spacey-seclabel--clients{
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
@@ -836,10 +840,11 @@
     color:#eef1f8;
   }
 
-  /* ---------- Card ---------- */
+  /* ---------- Card — roughly half-width, centred ---------- */
   .spacey-ccard{
     --card-bg:#080a14;
     position:relative; overflow:hidden;
+    width:100%; max-width:660px; margin:0 auto;
     border-radius:20px;
     background:
       linear-gradient(104deg,
@@ -849,7 +854,7 @@
         transparent 64%),
       var(--card-bg);
     border:1px solid rgba(120,130,255,.18);
-    min-height:clamp(320px,36vw,460px);
+    min-height:clamp(280px,30vw,380px);
     display:flex; align-items:center;
     isolation:isolate; outline:none;
     transition:border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.2,.7,.2,1);
@@ -884,33 +889,41 @@
   .spacey-ccard__body{
     position:relative; z-index:3;
     width:calc(100% - var(--video-w));
-    padding:clamp(26px,3.4vw,46px) clamp(18px,2vw,28px) clamp(26px,3.4vw,46px) clamp(26px,3.4vw,46px);
+    padding:clamp(20px,2.6vw,32px) clamp(12px,1.4vw,18px) clamp(20px,2.6vw,32px) clamp(20px,2.6vw,30px);
   }
 
   /* ---------- Giant title ---------- */
   .spacey-ccard__giant{
-    margin:0 0 clamp(14px,1.8vw,22px);
+    margin:0 0 clamp(10px,1.4vw,16px);
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700;
-    line-height:.92;
-    letter-spacing:-.02em;             /* em-based so it scales with the fitted size */
+    line-height:.94;
+    letter-spacing:-.02em;             /* em-based, scales with the size */
     color:#fff;
+    overflow:hidden;                   /* hard guarantee it never reaches the video */
   }
   .spacey-ccard__giantline{
-    display:inline-block;              /* hugs the text so JS can measure it */
+    display:block;
     white-space:nowrap;
     text-transform:uppercase;
-    font-size:56px;                    /* placeholder — JS overwrites to fit exactly */
   }
-  /* each word on its own row */
-  .spacey-ccard__giantline + .spacey-ccard__giantline{ margin-top:.02em; }
-  .spacey-ccard__giant > span{ display:block; }
+  /* Fallback for browsers without container query units */
+  .spacey-ccard__giantline--a{ font-size:clamp(22px,4.6vw,52px); }
+  .spacey-ccard__giantline--b{ font-size:clamp(28px,5.8vw,66px); }
+
+  /* Preferred: size follows the column width exactly, no JS.
+     Values are tuned per word length (TOKENIZED = 9 chars, LOYALTY = 7). */
+  @supports (font-size:1cqw){
+    .spacey-ccard__body{ container-type:inline-size; }
+    .spacey-ccard__giantline--a{ font-size:17cqw; }
+    .spacey-ccard__giantline--b{ font-size:21.5cqw; }
+  }
 
   /* ---------- Dashed rules ---------- */
   .spacey-ccard__rule{
     height:0;
     border-top:1px dashed rgba(255,255,255,.28);
-    margin:clamp(14px,1.8vw,20px) 0;
+    margin:clamp(10px,1.4vw,16px) 0;
     transition:border-color .35s ease;
   }
   .spacey-ccard:hover .spacey-ccard__rule{ border-color:rgba(190,198,255,.5); }
@@ -920,8 +933,8 @@
     display:block; text-align:center;
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:600; text-transform:uppercase;
-    font-size:clamp(11px,1.15vw,15px);
-    letter-spacing:.30em;
+    font-size:clamp(10px,1.05vw,13px);
+    letter-spacing:.26em;
     color:#8f8fff;
   }
 
@@ -929,7 +942,7 @@
   .spacey-ccard__desc{
     margin:0; text-align:center;
     font-family:'Helvetica Neue',Arial,sans-serif;
-    font-size:clamp(13px,1.3vw,16px); line-height:1.55;
+    font-size:clamp(12px,1.15vw,14px); line-height:1.5;
     color:#aab2c6;
   }
 
@@ -961,13 +974,13 @@
 
   /* ---------- Mobile: stack, partition becomes horizontal ---------- */
   @media (max-width:720px){
-    .spacey-ccard{ min-height:auto; display:block; }
-    .spacey-ccard__body{ width:100%; padding:26px 22px 30px; }
+    .spacey-ccard{ min-height:auto; display:block; max-width:480px; }
+    .spacey-ccard__body{ width:100%; padding:24px 20px 26px; }
     .spacey-ccard__video{
-      position:relative; width:100%; height:220px; display:block;
+      position:relative; width:100%; height:200px; display:block;
     }
     .spacey-ccard__divider{
-      right:auto; left:8%; width:84%; top:auto; bottom:220px; height:1px;
+      right:auto; left:8%; width:84%; top:auto; bottom:200px; height:1px;
       background:linear-gradient(90deg, transparent, rgba(255,255,255,.75) 50%, transparent);
     }
     .spacey-ccard__glow{ width:90%; right:-20%; }
@@ -975,45 +988,14 @@
 </style>
 
 <script>
+/* Only job left: nudge autoplay on Safari/iOS. No layout JS. */
 (function(){
-  var v     = document.getElementById('spaceyCCardVideo');
-  var giant = document.getElementById('spaceyGiant');
-
-  /* --- video: normal speed, just make sure it actually plays --- */
-  if(v){
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduce){ v.pause(); }
-    else{
-      var tryPlay = function(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); };
-      tryPlay();
-      document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
-    }
-  }
-
-  /* --- fit each title word to the exact column width --- */
-  if(!giant) return;
-  var lines = giant.querySelectorAll('.spacey-ccard__giantline');
-  var REF = 100;   // measure at a known size, then scale proportionally
-
-  function fit(){
-    var target = giant.clientWidth;
-    if(!target) return;
-    Array.prototype.forEach.call(lines, function(el){
-      el.style.fontSize = REF + 'px';
-      var natural = el.offsetWidth;          // inline-block hugs the text
-      if(natural > 0){
-        el.style.fontSize = (REF * target / natural).toFixed(2) + 'px';
-      }
-    });
-  }
-
-  fit();
-  window.addEventListener('resize', fit);
-  window.addEventListener('load', fit);
-  // Clash Display swaps in asynchronously and changes the metrics
-  if(document.fonts && document.fonts.ready && document.fonts.ready.then){
-    document.fonts.ready.then(fit).catch(function(){});
-  }
+  var v = document.getElementById('spaceyCCardVideo');
+  if(!v) return;
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ v.pause(); return; }
+  var tryPlay = function(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); };
+  tryPlay();
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
 })();
 </script>
 
