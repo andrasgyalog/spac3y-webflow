@@ -1,12 +1,12 @@
 <!-- ============================================================= -->
 <!-- SPAC3Y — SECTION 4: "WHAT CLIENTS COME TO US FOR" CARD       -->
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
-<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v8/assets/tokens-loop.mp4  (seamless boomerang loop)  -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v9/assets/tokens-loop.mp4  (seamless boomerang loop)  -->
 <!--                                                              -->
 <!-- The video is a normal opaque clip; its left edge is faded    -->
 <!-- into the card with a CSS mask (mask-image), so it blends     -->
 <!-- into the real card background instead of a baked-in colour.  -->
-<!-- Tweak the mask stops below to change how far it bleeds.      -->
+<!-- It idles slowly and speeds up on hover (playbackRate ramp).  -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -21,21 +21,21 @@
     <h2 class="spacey-clients__heading">What clients usually come to us for</h2>
 
     <!-- ---------- CARD ---------- -->
-    <article class="spacey-ccard">
+    <article class="spacey-ccard" id="spaceyCCard" tabindex="0">
       <div class="spacey-ccard__glow" aria-hidden="true"></div>
 
       <div class="spacey-ccard__body">
         <!-- EDIT: card category -->
         <span class="spacey-ccard__cat">Web3 Experiences</span>
         <!-- EDIT: card title -->
-        <h3 class="spacey-ccard__title">Tokenized Loyalty</h3>
+        <h3 class="spacey-ccard__title"><span class="spacey-ccard__titlebox">Tokenized Loyalty</span></h3>
         <!-- EDIT: card description -->
         <p class="spacey-ccard__desc">Smart loyalty systems, community ownership<br>and digital rewards.</p>
       </div>
 
       <!-- EDIT: card video (boomerang loop, muted autoplay) -->
-      <video class="spacey-ccard__video"
-             src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v8/assets/tokens-loop.mp4"
+      <video class="spacey-ccard__video" id="spaceyCCardVideo"
+             src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v9/assets/tokens-loop.mp4"
              autoplay loop muted playsinline preload="auto"
              disablepictureinpicture aria-hidden="true"></video>
     </article>
@@ -72,12 +72,38 @@
     --card-bg:#080a14;                 /* the solid the video fades into */
     position:relative; overflow:hidden;
     border-radius:20px;
-    background:var(--card-bg);
+    /* brand gradient washing in from the left over the base solid */
+    background:
+      linear-gradient(104deg,
+        rgba(91,91,245,.26) 0%,
+        rgba(91,91,245,.10) 26%,
+        rgba(91,91,245,.02) 46%,
+        transparent 64%),
+      var(--card-bg);
     border:1px solid rgba(120,130,255,.18);
     min-height:clamp(320px,36vw,460px);
     display:flex; align-items:center;
-    isolation:isolate;
+    isolation:isolate; outline:none;
+    transition:border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.2,.7,.2,1);
   }
+  /* hover: light rim + glow */
+  .spacey-ccard:hover, .spacey-ccard:focus-visible{
+    border-color:rgba(180,190,255,.55);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.10),
+      0 0 0 1px rgba(150,160,255,.20),
+      0 18px 60px rgba(91,91,245,.28),
+      0 0 90px rgba(91,91,245,.18);
+    transform:translateY(-3px);
+  }
+
+  /* accent hairline down the left edge */
+  .spacey-ccard::before{
+    content:''; position:absolute; z-index:2; left:0; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg, transparent, rgba(123,123,255,.9) 28%, rgba(123,123,255,.9) 72%, transparent);
+    opacity:.5; transition:opacity .35s ease;
+  }
+  .spacey-ccard:hover::before{ opacity:1; }
 
   /* soft brand glow behind the video side */
   .spacey-ccard__glow{
@@ -86,26 +112,40 @@
     width:52%; aspect-ratio:1/1;
     background:radial-gradient(circle, rgba(91,91,245,.34) 0%, rgba(91,91,245,.10) 45%, transparent 70%);
     filter:blur(10px);
+    transition:opacity .35s ease;
   }
+  .spacey-ccard:hover .spacey-ccard__glow{ opacity:1.35; }
 
   .spacey-ccard__body{
-    position:relative; z-index:2;
+    position:relative; z-index:3;
     padding:clamp(28px,4vw,56px);
     max-width:min(560px,58%);
   }
   .spacey-ccard__cat{
-    display:block; margin-bottom:clamp(10px,1.2vw,16px);
+    display:block; margin-bottom:clamp(12px,1.4vw,18px);
     font-family:'Helvetica Neue',Arial,sans-serif;
     font-weight:600; font-size:clamp(14px,1.5vw,18px);
     color:#7b7bff; letter-spacing:.005em;
   }
-  .spacey-ccard__title{
-    margin:0 0 clamp(12px,1.5vw,20px);
+  /* title sits in its own outlined box */
+  .spacey-ccard__title{ margin:0 0 clamp(14px,1.6vw,22px); }
+  .spacey-ccard__titlebox{
+    display:inline-block;
+    padding:.22em .46em .28em;
+    border:1px solid rgba(255,255,255,.20);
+    border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700;
-    font-size:clamp(30px,4.4vw,52px);
-    line-height:1.04; letter-spacing:-.03em;
+    font-size:clamp(28px,4.1vw,48px);
+    line-height:1.06; letter-spacing:-.01em;
     color:#fff;
+    transition:border-color .35s ease, background .35s ease, box-shadow .35s ease;
+  }
+  .spacey-ccard:hover .spacey-ccard__titlebox{
+    border-color:rgba(190,198,255,.6);
+    background:linear-gradient(180deg, rgba(123,123,255,.16), rgba(255,255,255,.03));
+    box-shadow:0 0 26px rgba(91,91,245,.30);
   }
   .spacey-ccard__desc{
     margin:0;
@@ -125,7 +165,9 @@
        Stays clear of the copy: barely visible until ~50%, solid past 78%. */
     -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.12) 26%, rgba(0,0,0,.55) 52%, #000 78%);
             mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.12) 26%, rgba(0,0,0,.55) 52%, #000 78%);
+    transition:opacity .35s ease;
   }
+  .spacey-ccard:hover .spacey-ccard__video{ opacity:1; }
 
   /* ---------- Mobile: video becomes a faded backdrop ---------- */
   @media (max-width:720px){
@@ -138,21 +180,44 @@
     }
     .spacey-ccard__glow{ width:90%; right:-20%; }
   }
-
-  /* Respect reduced-motion: hold a still frame instead of looping */
-  @media (prefers-reduced-motion:reduce){
-    .spacey-ccard__video{ animation:none; }
-  }
 </style>
 
 <script>
-/* Safari/iOS occasionally ignores the autoplay attribute until a play() call. */
 (function(){
-  var v = document.querySelector('.spacey-ccard__video');
-  if(!v) return;
-  var tryPlay = function(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); };
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ v.pause(); return; }
+  var card = document.getElementById('spaceyCCard');
+  var v    = document.getElementById('spaceyCCardVideo');
+  if(!card || !v) return;
+
+  var IDLE = 0.45;                 // EDIT: resting speed
+  var HOT  = 1.7;                  // EDIT: hover speed
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var want = IDLE, running = false;
+
+  function apply(r){ try{ v.playbackRate = r; }catch(e){} }
+
+  /* Ramp the rate instead of snapping it — a hard jump to 1.7x reads as a glitch. */
+  function loop(){
+    var cur = v.playbackRate || IDLE;
+    var d = want - cur;
+    if(Math.abs(d) < 0.02){ apply(want); running = false; return; }
+    apply(cur + d * 0.12);
+    requestAnimationFrame(loop);
+  }
+  function kick(){ if(!running){ running = true; requestAnimationFrame(loop); } }
+
+  function tryPlay(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); }
+
+  if(reduce){ v.pause(); return; }
+
+  apply(IDLE);
   tryPlay();
+  v.addEventListener('loadedmetadata', function(){ apply(want); });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
+
+  card.addEventListener('mouseenter', function(){ want = HOT;  kick(); });
+  card.addEventListener('mouseleave', function(){ want = IDLE; kick(); });
+  card.addEventListener('focus',      function(){ want = HOT;  kick(); });
+  card.addEventListener('blur',       function(){ want = IDLE; kick(); });
 })();
 </script>

@@ -1,7 +1,7 @@
 <!-- ============================================================= -->
 <!-- SPAC3Y — SECTION 1: LABEL + INTRO + HERO SCROLL + CAPTION    -->
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
-<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v8/assets/frames/frame_001.webp ... frame_125.webp    -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v9/assets/frames/frame_001.webp ... frame_125.webp    -->
 <!-- ============================================================= -->
 
 <!-- Display typeface: Clash Display (Fontshare) + Archivo Black (Google) as fallback -->
@@ -15,7 +15,7 @@
 <section class="spacey-intro">
   <div class="spacey-intro__inner">
     <!-- EDIT: section label -->
-    <div class="spacey-seclabel">Hero Banner</div>
+    <div class="spacey-seclabel">Hero banner for main page</div>
     <!-- EDIT: intro heading -->
     <h2 class="spacey-intro__title">Visual Direction — Moodboard</h2>
     <!-- EDIT: intro paragraph -->
@@ -128,7 +128,7 @@
 
   /* ---- Hero ---- */
   .spacey-hero{ position:relative; background:#05060a; }
-  .spacey-hero__track{ position:relative; height:360vh; }
+  .spacey-hero__track{ position:relative; height:480vh; }
   .spacey-hero__sticky{
     position:sticky; top:0; height:100vh; width:100%;
     overflow:hidden; background:#05060a;
@@ -172,9 +172,10 @@
   .spacey-hero__line{
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700; text-transform:uppercase;
-    font-size:clamp(20px,4vw,56px);
-    line-height:1.06;
-    letter-spacing:-.025em;            /* tight, hard kerning */
+    font-size:clamp(19px,3.5vw,48px);
+    line-height:1.18;
+    letter-spacing:.045em;             /* open tracking so glyphs breathe */
+    word-spacing:.18em;                /* clear gaps between words */
     color:#fff;
     /* layered shadow so the type separates from the fog */
     text-shadow:
@@ -281,7 +282,7 @@
 (function(){
   var FRAME_COUNT = 125;
   var pad = function(n){ return ('000'+n).slice(-3); };
-  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v8/assets/frames/frame_'+pad(i)+'.webp'; };
+  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v9/assets/frames/frame_'+pad(i)+'.webp'; };
 
   var canvas  = document.getElementById('spaceyHeroCanvas');
   var ctx     = canvas.getContext('2d');
@@ -338,14 +339,35 @@
     }
   }
 
-  function onReady(){ ready = true; resize(); draw(0); loading.classList.add('is-hidden'); }
+  function onReady(){
+    ready = true; resize();
+    want = shown = mapped();          // respect wherever the user already scrolled to
+    render(shown);
+    loading.classList.add('is-hidden');
+  }
 
-  function progress(){
+  /* ---------------- scroll mapping ----------------
+     LEAD  — dead zone at the top: the first 8% of the track does nothing,
+             so a small accidental scroll doesn't snap the animation awake.
+     TAIL  — the animation finishes here; everything past it is a long
+             "brake" where the final state (nav + buttons) simply holds
+             on screen while you keep scrolling.
+     Between them the value is eased, so it starts and lands softly.     */
+  var LEAD = 0.08;
+  var TAIL = 0.72;
+
+  function rawProgress(){
     var rect = track.getBoundingClientRect();
     var dist = rect.height - window.innerHeight;
     if(dist<=0) return 0;
     var p = -rect.top / dist;
     return p<0?0:(p>1?1:p);
+  }
+
+  function mapped(){
+    var t = (rawProgress() - LEAD) / (TAIL - LEAD);
+    t = t < 0 ? 0 : (t > 1 ? 1 : t);
+    return t*t*(3 - 2*t);              // ease in/out — soft departure, soft landing
   }
 
   function ramp(p, a, b){
@@ -361,36 +383,50 @@
   function applyCopy(p){
     set(line1, ramp(p, 0.04, 0.15), 18);            // scattered phase
     set(line2, ramp(p, 0.42, 0.55), 18);            // lattice -> monolith
-    set(sub,   ramp(p, 0.70, 0.82), 14);            // subline
-    set(cta,   ramp(p, 0.84, 0.95), 16);            // buttons
-    // nav drops in from above at the very end
-    var on = ramp(p, 0.80, 0.92);
+    set(sub,   ramp(p, 0.62, 0.76), 14);            // subline
+    set(cta,   ramp(p, 0.76, 0.92), 16);            // buttons
+    // nav drops in from above near the end, before the brake zone
+    var on = ramp(p, 0.70, 0.86);
     nav.style.opacity = on;
     nav.style.transform = 'translateY('+((1-on)*-12).toFixed(1)+'px)';
     // scroll hint only at the very start
     hint.style.opacity = 1 - ramp(p, 0.01, 0.09);
   }
 
-  var ticking = false;
-  function onScroll(){
-    if(ticking) return;
-    ticking = true;
-    requestAnimationFrame(function(){
-      try{
-        var p = progress();
-        targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
-        if(ready && targetFrame!==currentFrame) draw(targetFrame);
-        applyCopy(p);
-      } finally {
-        ticking = false;
-      }
-    });
+  /* Inertia: the rendered value chases the scroll value instead of being
+     nailed to it, so the sequence glides rather than twitching frame to
+     frame. EASE is the catch-up rate per frame (lower = softer/heavier). */
+  var EASE = 0.16;
+  var shown = 0, want = 0, running = false;
+
+  function render(p){
+    targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
+    if(ready && targetFrame!==currentFrame) draw(targetFrame);
+    applyCopy(p);
   }
 
+  function loop(){
+    var d = want - shown;
+    if(Math.abs(d) < 0.0004){          // settled — stop burning frames
+      shown = want; render(shown); running = false; return;
+    }
+    shown += d * EASE;
+    render(shown);
+    requestAnimationFrame(loop);
+  }
+
+  function kick(){ if(!running){ running = true; requestAnimationFrame(loop); } }
+
+  function onScroll(){ want = mapped(); kick(); }
+
   window.addEventListener('scroll', onScroll, {passive:true});
-  window.addEventListener('resize', function(){ dpr = Math.min(window.devicePixelRatio||1,2); resize(); onScroll(); });
+  window.addEventListener('resize', function(){
+    dpr = Math.min(window.devicePixelRatio||1,2);
+    resize(); onScroll();
+  });
 
   preload();
-  onScroll();
+  want = shown = mapped();
+  render(shown);
 })();
 </script>

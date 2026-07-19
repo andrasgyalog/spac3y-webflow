@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPAC3Y</title>
+<title>SPAC3Y — Preview</title>
 <style>
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#05060a; }
@@ -27,7 +27,7 @@
 <section class="spacey-intro">
   <div class="spacey-intro__inner">
     <!-- EDIT: section label -->
-    <div class="spacey-seclabel">Hero Banner</div>
+    <div class="spacey-seclabel">Hero banner for main page</div>
     <!-- EDIT: intro heading -->
     <h2 class="spacey-intro__title">Visual Direction — Moodboard</h2>
     <!-- EDIT: intro paragraph -->
@@ -140,7 +140,7 @@
 
   /* ---- Hero ---- */
   .spacey-hero{ position:relative; background:#05060a; }
-  .spacey-hero__track{ position:relative; height:360vh; }
+  .spacey-hero__track{ position:relative; height:480vh; }
   .spacey-hero__sticky{
     position:sticky; top:0; height:100vh; width:100%;
     overflow:hidden; background:#05060a;
@@ -184,9 +184,10 @@
   .spacey-hero__line{
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700; text-transform:uppercase;
-    font-size:clamp(20px,4vw,56px);
-    line-height:1.06;
-    letter-spacing:-.025em;            /* tight, hard kerning */
+    font-size:clamp(19px,3.5vw,48px);
+    line-height:1.18;
+    letter-spacing:.045em;             /* open tracking so glyphs breathe */
+    word-spacing:.18em;                /* clear gaps between words */
     color:#fff;
     /* layered shadow so the type separates from the fog */
     text-shadow:
@@ -350,14 +351,35 @@
     }
   }
 
-  function onReady(){ ready = true; resize(); draw(0); loading.classList.add('is-hidden'); }
+  function onReady(){
+    ready = true; resize();
+    want = shown = mapped();          // respect wherever the user already scrolled to
+    render(shown);
+    loading.classList.add('is-hidden');
+  }
 
-  function progress(){
+  /* ---------------- scroll mapping ----------------
+     LEAD  — dead zone at the top: the first 8% of the track does nothing,
+             so a small accidental scroll doesn't snap the animation awake.
+     TAIL  — the animation finishes here; everything past it is a long
+             "brake" where the final state (nav + buttons) simply holds
+             on screen while you keep scrolling.
+     Between them the value is eased, so it starts and lands softly.     */
+  var LEAD = 0.08;
+  var TAIL = 0.72;
+
+  function rawProgress(){
     var rect = track.getBoundingClientRect();
     var dist = rect.height - window.innerHeight;
     if(dist<=0) return 0;
     var p = -rect.top / dist;
     return p<0?0:(p>1?1:p);
+  }
+
+  function mapped(){
+    var t = (rawProgress() - LEAD) / (TAIL - LEAD);
+    t = t < 0 ? 0 : (t > 1 ? 1 : t);
+    return t*t*(3 - 2*t);              // ease in/out — soft departure, soft landing
   }
 
   function ramp(p, a, b){
@@ -373,37 +395,51 @@
   function applyCopy(p){
     set(line1, ramp(p, 0.04, 0.15), 18);            // scattered phase
     set(line2, ramp(p, 0.42, 0.55), 18);            // lattice -> monolith
-    set(sub,   ramp(p, 0.70, 0.82), 14);            // subline
-    set(cta,   ramp(p, 0.84, 0.95), 16);            // buttons
-    // nav drops in from above at the very end
-    var on = ramp(p, 0.80, 0.92);
+    set(sub,   ramp(p, 0.62, 0.76), 14);            // subline
+    set(cta,   ramp(p, 0.76, 0.92), 16);            // buttons
+    // nav drops in from above near the end, before the brake zone
+    var on = ramp(p, 0.70, 0.86);
     nav.style.opacity = on;
     nav.style.transform = 'translateY('+((1-on)*-12).toFixed(1)+'px)';
     // scroll hint only at the very start
     hint.style.opacity = 1 - ramp(p, 0.01, 0.09);
   }
 
-  var ticking = false;
-  function onScroll(){
-    if(ticking) return;
-    ticking = true;
-    requestAnimationFrame(function(){
-      try{
-        var p = progress();
-        targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
-        if(ready && targetFrame!==currentFrame) draw(targetFrame);
-        applyCopy(p);
-      } finally {
-        ticking = false;
-      }
-    });
+  /* Inertia: the rendered value chases the scroll value instead of being
+     nailed to it, so the sequence glides rather than twitching frame to
+     frame. EASE is the catch-up rate per frame (lower = softer/heavier). */
+  var EASE = 0.16;
+  var shown = 0, want = 0, running = false;
+
+  function render(p){
+    targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
+    if(ready && targetFrame!==currentFrame) draw(targetFrame);
+    applyCopy(p);
   }
 
+  function loop(){
+    var d = want - shown;
+    if(Math.abs(d) < 0.0004){          // settled — stop burning frames
+      shown = want; render(shown); running = false; return;
+    }
+    shown += d * EASE;
+    render(shown);
+    requestAnimationFrame(loop);
+  }
+
+  function kick(){ if(!running){ running = true; requestAnimationFrame(loop); } }
+
+  function onScroll(){ want = mapped(); kick(); }
+
   window.addEventListener('scroll', onScroll, {passive:true});
-  window.addEventListener('resize', function(){ dpr = Math.min(window.devicePixelRatio||1,2); resize(); onScroll(); });
+  window.addEventListener('resize', function(){
+    dpr = Math.min(window.devicePixelRatio||1,2);
+    resize(); onScroll();
+  });
 
   preload();
-  onScroll();
+  want = shown = mapped();
+  render(shown);
 })();
 </script>
 
@@ -674,7 +710,7 @@
 <!-- The video is a normal opaque clip; its left edge is faded    -->
 <!-- into the card with a CSS mask (mask-image), so it blends     -->
 <!-- into the real card background instead of a baked-in colour.  -->
-<!-- Tweak the mask stops below to change how far it bleeds.      -->
+<!-- It idles slowly and speeds up on hover (playbackRate ramp).  -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -689,20 +725,20 @@
     <h2 class="spacey-clients__heading">What clients usually come to us for</h2>
 
     <!-- ---------- CARD ---------- -->
-    <article class="spacey-ccard">
+    <article class="spacey-ccard" id="spaceyCCard" tabindex="0">
       <div class="spacey-ccard__glow" aria-hidden="true"></div>
 
       <div class="spacey-ccard__body">
         <!-- EDIT: card category -->
         <span class="spacey-ccard__cat">Web3 Experiences</span>
         <!-- EDIT: card title -->
-        <h3 class="spacey-ccard__title">Tokenized Loyalty</h3>
+        <h3 class="spacey-ccard__title"><span class="spacey-ccard__titlebox">Tokenized Loyalty</span></h3>
         <!-- EDIT: card description -->
         <p class="spacey-ccard__desc">Smart loyalty systems, community ownership<br>and digital rewards.</p>
       </div>
 
       <!-- EDIT: card video (boomerang loop, muted autoplay) -->
-      <video class="spacey-ccard__video"
+      <video class="spacey-ccard__video" id="spaceyCCardVideo"
              src="assets/tokens-loop.mp4"
              autoplay loop muted playsinline preload="auto"
              disablepictureinpicture aria-hidden="true"></video>
@@ -740,12 +776,38 @@
     --card-bg:#080a14;                 /* the solid the video fades into */
     position:relative; overflow:hidden;
     border-radius:20px;
-    background:var(--card-bg);
+    /* brand gradient washing in from the left over the base solid */
+    background:
+      linear-gradient(104deg,
+        rgba(91,91,245,.26) 0%,
+        rgba(91,91,245,.10) 26%,
+        rgba(91,91,245,.02) 46%,
+        transparent 64%),
+      var(--card-bg);
     border:1px solid rgba(120,130,255,.18);
     min-height:clamp(320px,36vw,460px);
     display:flex; align-items:center;
-    isolation:isolate;
+    isolation:isolate; outline:none;
+    transition:border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.2,.7,.2,1);
   }
+  /* hover: light rim + glow */
+  .spacey-ccard:hover, .spacey-ccard:focus-visible{
+    border-color:rgba(180,190,255,.55);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.10),
+      0 0 0 1px rgba(150,160,255,.20),
+      0 18px 60px rgba(91,91,245,.28),
+      0 0 90px rgba(91,91,245,.18);
+    transform:translateY(-3px);
+  }
+
+  /* accent hairline down the left edge */
+  .spacey-ccard::before{
+    content:''; position:absolute; z-index:2; left:0; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg, transparent, rgba(123,123,255,.9) 28%, rgba(123,123,255,.9) 72%, transparent);
+    opacity:.5; transition:opacity .35s ease;
+  }
+  .spacey-ccard:hover::before{ opacity:1; }
 
   /* soft brand glow behind the video side */
   .spacey-ccard__glow{
@@ -754,26 +816,40 @@
     width:52%; aspect-ratio:1/1;
     background:radial-gradient(circle, rgba(91,91,245,.34) 0%, rgba(91,91,245,.10) 45%, transparent 70%);
     filter:blur(10px);
+    transition:opacity .35s ease;
   }
+  .spacey-ccard:hover .spacey-ccard__glow{ opacity:1.35; }
 
   .spacey-ccard__body{
-    position:relative; z-index:2;
+    position:relative; z-index:3;
     padding:clamp(28px,4vw,56px);
     max-width:min(560px,58%);
   }
   .spacey-ccard__cat{
-    display:block; margin-bottom:clamp(10px,1.2vw,16px);
+    display:block; margin-bottom:clamp(12px,1.4vw,18px);
     font-family:'Helvetica Neue',Arial,sans-serif;
     font-weight:600; font-size:clamp(14px,1.5vw,18px);
     color:#7b7bff; letter-spacing:.005em;
   }
-  .spacey-ccard__title{
-    margin:0 0 clamp(12px,1.5vw,20px);
+  /* title sits in its own outlined box */
+  .spacey-ccard__title{ margin:0 0 clamp(14px,1.6vw,22px); }
+  .spacey-ccard__titlebox{
+    display:inline-block;
+    padding:.22em .46em .28em;
+    border:1px solid rgba(255,255,255,.20);
+    border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700;
-    font-size:clamp(30px,4.4vw,52px);
-    line-height:1.04; letter-spacing:-.03em;
+    font-size:clamp(28px,4.1vw,48px);
+    line-height:1.06; letter-spacing:-.01em;
     color:#fff;
+    transition:border-color .35s ease, background .35s ease, box-shadow .35s ease;
+  }
+  .spacey-ccard:hover .spacey-ccard__titlebox{
+    border-color:rgba(190,198,255,.6);
+    background:linear-gradient(180deg, rgba(123,123,255,.16), rgba(255,255,255,.03));
+    box-shadow:0 0 26px rgba(91,91,245,.30);
   }
   .spacey-ccard__desc{
     margin:0;
@@ -793,7 +869,9 @@
        Stays clear of the copy: barely visible until ~50%, solid past 78%. */
     -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.12) 26%, rgba(0,0,0,.55) 52%, #000 78%);
             mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.12) 26%, rgba(0,0,0,.55) 52%, #000 78%);
+    transition:opacity .35s ease;
   }
+  .spacey-ccard:hover .spacey-ccard__video{ opacity:1; }
 
   /* ---------- Mobile: video becomes a faded backdrop ---------- */
   @media (max-width:720px){
@@ -806,22 +884,45 @@
     }
     .spacey-ccard__glow{ width:90%; right:-20%; }
   }
-
-  /* Respect reduced-motion: hold a still frame instead of looping */
-  @media (prefers-reduced-motion:reduce){
-    .spacey-ccard__video{ animation:none; }
-  }
 </style>
 
 <script>
-/* Safari/iOS occasionally ignores the autoplay attribute until a play() call. */
 (function(){
-  var v = document.querySelector('.spacey-ccard__video');
-  if(!v) return;
-  var tryPlay = function(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); };
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ v.pause(); return; }
+  var card = document.getElementById('spaceyCCard');
+  var v    = document.getElementById('spaceyCCardVideo');
+  if(!card || !v) return;
+
+  var IDLE = 0.45;                 // EDIT: resting speed
+  var HOT  = 1.7;                  // EDIT: hover speed
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var want = IDLE, running = false;
+
+  function apply(r){ try{ v.playbackRate = r; }catch(e){} }
+
+  /* Ramp the rate instead of snapping it — a hard jump to 1.7x reads as a glitch. */
+  function loop(){
+    var cur = v.playbackRate || IDLE;
+    var d = want - cur;
+    if(Math.abs(d) < 0.02){ apply(want); running = false; return; }
+    apply(cur + d * 0.12);
+    requestAnimationFrame(loop);
+  }
+  function kick(){ if(!running){ running = true; requestAnimationFrame(loop); } }
+
+  function tryPlay(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); }
+
+  if(reduce){ v.pause(); return; }
+
+  apply(IDLE);
   tryPlay();
+  v.addEventListener('loadedmetadata', function(){ apply(want); });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
+
+  card.addEventListener('mouseenter', function(){ want = HOT;  kick(); });
+  card.addEventListener('mouseleave', function(){ want = IDLE; kick(); });
+  card.addEventListener('focus',      function(){ want = HOT;  kick(); });
+  card.addEventListener('blur',       function(){ want = IDLE; kick(); });
 })();
 </script>
 
