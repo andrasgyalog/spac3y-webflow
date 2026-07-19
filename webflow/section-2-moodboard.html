@@ -1,20 +1,26 @@
 <!-- ============================================================= -->
 <!-- SPAC3Y — SECTION 2: MOODBOARD (static grid, no JS) + CAPTION -->
-<!-- Self-contained. Paste into a Webflow Embed block, or rebuild -->
-<!-- later with native Webflow Image + Grid elements.            -->
-<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/moodboard-1.jpg ... moodboard-5.jpg        -->
+<!-- Self-contained. Paste into a Webflow Embed block.            -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v5/assets/moodboard-1.jpg ... moodboard-5.jpg        -->
 <!-- ============================================================= -->
+
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
 
 <section class="spacey-moodboard">
   <div class="spacey-moodboard__inner">
+    <!-- EDIT: section label -->
+    <div class="spacey-seclabel spacey-seclabel--mood">Moodboard</div>
+
     <div class="spacey-moodboard__grid">
       <!-- EDIT: moodboard images -->
-      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v5/assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v5/assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v5/assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v5/assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v5/assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
     </div>
+
     <!-- EDIT: moodboard caption -->
     <p class="spacey-moodboard__caption">
       General moodboard of the visual states and treatments that will appear throughout the site
@@ -26,6 +32,16 @@
 <style>
   .spacey-moodboard{ background:#05060a; padding:clamp(40px,7vw,96px) 0; border-top:1px solid rgba(255,255,255,.12); }
   .spacey-moodboard__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+
+  .spacey-seclabel--mood{
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:600; text-transform:uppercase;
+    font-size:clamp(11px,1.1vw,13px);
+    letter-spacing:.42em;
+    color:#5b5bf5;
+    margin-bottom:clamp(18px,2.4vw,30px);
+  }
+
   .spacey-moodboard__grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -34,21 +50,20 @@
   .spacey-moodboard__cell{ margin:0; overflow:hidden; border-radius:12px; background:#0c0e14; }
   .spacey-moodboard__cell img{
     display:block; width:100%; height:100%;
-    aspect-ratio:4/3;                 /* consistent ratio across all cells */
-    object-fit:cover;                 /* crop instead of distort */
+    aspect-ratio:4/3;
+    object-fit:cover;
     transition:transform .5s ease;
   }
   .spacey-moodboard__cell:hover img{ transform:scale(1.03); }
-
-  /* Let the 5th image span two columns so the grid stays balanced. */
   .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
 
+  /* Centred under the grid */
   .spacey-moodboard__caption{
-    margin:clamp(20px,2.6vw,30px) 0 0;
+    margin:clamp(24px,3vw,36px) auto 0;
+    max-width:720px;
+    text-align:center;
     font-family:'Helvetica Neue',Arial,sans-serif;
-    font-size:clamp(13px,1.35vw,15px); line-height:1.6; color:#79839a;
-    border-left:2px solid rgba(255,255,255,.14); padding-left:16px;
-    max-width:760px;
+    font-size:clamp(13px,1.35vw,15px); line-height:1.65; color:#79839a;
   }
 
   @media (max-width:720px){

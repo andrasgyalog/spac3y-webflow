@@ -7,8 +7,14 @@
 <!-- flicker; --accent sets the category colour-coding.           -->
 <!-- ============================================================= -->
 
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+
 <section class="spacey-cardsec">
   <div class="spacey-cardsec__inner">
+
+    <!-- EDIT: section label -->
+    <div class="spacey-seclabel spacey-seclabel--cards">Cases cards design + animation</div>
 
     <!-- EDIT: cards caption -->
     <p class="spacey-cardsec__caption">
@@ -40,11 +46,11 @@
       <!-- ---------- CARD 2 ---------- -->
       <article class="spacey-card" tabindex="0"
                style="--accent:#b39cff; --glow:rgba(179,156,255,.32)"
-               data-img-default="assets/card-audio-1.jpg"
-               data-img-hover="assets/card-audio-2.jpg">
+               data-img-default="assets/card-audio-2.jpg"
+               data-img-hover="assets/card-audio-1.jpg">
         <div class="spacey-card__media">
-          <!-- EDIT: card 2 default image -->
-          <img class="spacey-card__img" src="assets/card-audio-1.jpg" alt="Audio &amp; sound design sample">
+          <!-- EDIT: card 2 default image (unlit — lights up on hover) -->
+          <img class="spacey-card__img" src="assets/card-audio-2.jpg" alt="Audio &amp; sound design sample">
         </div>
         <div class="spacey-card__body">
           <!-- EDIT: card 2 category -->
@@ -71,6 +77,15 @@
     border-top:1px solid rgba(255,255,255,.12);
   }
   .spacey-cardsec__inner{ max-width:860px; margin:0 auto; }
+
+  .spacey-seclabel--cards{
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:600; text-transform:uppercase;
+    font-size:clamp(11px,1.1vw,13px);
+    letter-spacing:.42em;
+    color:#5b5bf5;
+    margin-bottom:clamp(16px,2.2vw,26px);
+  }
 
   .spacey-cardsec__caption{
     margin:0 0 clamp(24px,3vw,38px);
