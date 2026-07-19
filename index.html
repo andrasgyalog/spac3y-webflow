@@ -4,113 +4,158 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPAC3Y — Preview</title>
-
 <style>
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#05060a; }
-
-  /* ---- Section 1 : hero ---- */
-  .spacey-hero{ position: relative; background:#05060a; }
-  .spacey-hero__track{ position: relative; height: 360vh; }
-  .spacey-hero__sticky{ position: sticky; top:0; height:100vh; width:100%; overflow:hidden; background:#05060a; }
-  .spacey-hero__canvas{ display:block; width:100%; height:100%; }
-  .spacey-hero__loading{
-    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
-    background:#05060a; color:#e8ecf5; font-family:'Helvetica Neue',Arial,sans-serif; letter-spacing:.18em; font-size:14px;
-    transition:opacity .5s ease; z-index:3;
-  }
-  .spacey-hero__loading.is-hidden{ opacity:0; pointer-events:none; }
-  .spacey-hero__spinner{ width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.15); border-top-color:#e8ecf5; animation:spaceySpin .8s linear infinite; }
-  @keyframes spaceySpin{ to{ transform:rotate(360deg); } }
-
-  /* ---- Section 2 : moodboard ---- */
-  .spacey-moodboard{ background:#05060a; padding:clamp(40px,7vw,96px) 0; border-top:1px solid rgba(255,255,255,.12); }
-  .spacey-moodboard__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
-  .spacey-moodboard__grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(10px,1.4vw,20px); }
-  .spacey-moodboard__cell{ margin:0; overflow:hidden; border-radius:12px; background:#0c0e14; }
-  .spacey-moodboard__cell img{ display:block; width:100%; height:100%; aspect-ratio:4/3; object-fit:cover; transition:transform .5s ease; }
-  .spacey-moodboard__cell:hover img{ transform:scale(1.03); }
-  .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
-  @media (max-width:720px){
-    .spacey-moodboard__grid{ grid-template-columns:repeat(2,1fr); }
-    .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
-  }
-
-  /* ---- Section 3 : card ---- */
-  .spacey-cardsec{
-    background:
-      radial-gradient(120% 120% at 20% 10%, rgba(124,243,208,.18), transparent 55%),
-      radial-gradient(120% 120% at 85% 90%, rgba(120,140,255,.20), transparent 55%),
-      #070812;
-    padding:clamp(48px,9vw,120px) 20px; display:flex; justify-content:center;
-    border-top:1px solid rgba(255,255,255,.12);
-  }
-  .spacey-cardsec__stage{ width:100%; max-width:380px; }
-  .spacey-card{
-    position:relative; border-radius:18px; overflow:hidden;
-    background:rgba(255,255,255,.06); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow:inset 0 0 24px rgba(255,255,255,.15), 0 18px 50px rgba(0,0,0,.45);
-    transform:scale(1); transition:transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease; outline:none;
-  }
-  .spacey-card:hover, .spacey-card:focus-visible{
-    transform:scale(1.02);
-    box-shadow:inset 0 0 30px rgba(255,255,255,.22), 0 0 34px rgba(124,243,208,.28), 0 22px 60px rgba(0,0,0,.5);
-  }
-  .spacey-card__media{ aspect-ratio:4/3; overflow:hidden; background:#0c0e14; }
-  .spacey-card__img{ display:block; width:100%; height:100%; object-fit:cover; }
-  .spacey-card__body{ padding:18px 20px 22px; color:#eef1f8; font-family:'Helvetica Neue',Arial,sans-serif; }
-  .spacey-card__cat{ display:inline-block; margin-bottom:10px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#7cf3d0; font-weight:700; }
-  .spacey-card__title{ margin:0 0 8px; font-size:19px; line-height:1.3; font-weight:700; }
-  .spacey-card__desc{ margin:0; font-size:13.5px; line-height:1.55; color:#aeb6c7; }
 </style>
 </head>
 <body>
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 1: INTRO + HERO SCROLL ANIMATION + CAPTION  -->
+<!-- Self-contained. Paste into a Webflow Embed block.            -->
+<!-- Requires: assets/frames/frame_001.webp ... frame_125.webp    -->
+<!-- ============================================================= -->
 
-<!-- ================= SECTION 1 — HERO ================= -->
+<!-- Display typeface: Clash Display (Fontshare) + Archivo Black (Google) as fallback -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
+<!-- ---------- INTRO BLOCK (above the hero animation) ---------- -->
+<section class="spacey-intro">
+  <div class="spacey-intro__inner">
+    <!-- EDIT: intro heading -->
+    <h2 class="spacey-intro__title">Visual Direction — Moodboard</h2>
+    <!-- EDIT: intro paragraph -->
+    <p class="spacey-intro__text">
+      The motif is a single dark crystalline form moving through three states: scattered fragments,
+      a glowing lattice, and a fused monolith. It reads as data becoming physical — raw, disconnected
+      information pulling itself into structure, then into something solid and permanent.
+      The direction deliberately avoids the usual AI clichés: no robots, no holograms, no glowing screens.
+    </p>
+  </div>
+</section>
+
+<!-- ---------- HERO SCROLL ANIMATION ---------- -->
 <section class="spacey-hero" id="spaceyHero">
+  <!-- Scroll track: its height defines how much scroll distance the scrub uses -->
   <div class="spacey-hero__track" id="spaceyHeroTrack">
+    <!-- Pinned viewport -->
     <div class="spacey-hero__sticky">
       <canvas class="spacey-hero__canvas" id="spaceyHeroCanvas"></canvas>
+
+      <!-- Loading state (hidden once all frames are decoded) -->
       <div class="spacey-hero__loading" id="spaceyHeroLoading">
         <div class="spacey-hero__spinner"></div>
         <div class="spacey-hero__loadtxt"><span id="spaceyHeroPct">0</span>%</div>
       </div>
+
+      <!-- Scroll-synced copy over the canvas -->
+      <div class="spacey-hero__copy">
+        <!-- EDIT: hero line 1 (fades in during the "scattered" phase) -->
+        <div class="spacey-hero__line" id="spaceyLine1">We help brands turn</div>
+        <!-- EDIT: hero line 2 (fades in during the "lattice → monolith" phase) -->
+        <div class="spacey-hero__line" id="spaceyLine2">Digital complexity into growth</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ================= SECTION 2 — MOODBOARD ================= -->
-<section class="spacey-moodboard">
-  <div class="spacey-moodboard__inner">
-    <div class="spacey-moodboard__grid">
-      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
-      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
-    </div>
+<!-- ---------- CAPTION UNDER THE HERO ---------- -->
+<section class="spacey-herocap">
+  <div class="spacey-herocap__inner">
+    <!-- EDIT: hero caption -->
+    <p class="spacey-herocap__text">
+      This is a concept preview of the main homepage hero banner. In the final version, text placement
+      and responsive behavior will be fully adapted for mobile and tablet — this free sample was put
+      together quickly to validate the direction, not polished to final production quality.
+    </p>
   </div>
 </section>
 
-<!-- ================= SECTION 3 — CARD ================= -->
-<section class="spacey-cardsec">
-  <div class="spacey-cardsec__stage">
-    <article class="spacey-card" id="spaceyCard" tabindex="0">
-      <div class="spacey-card__media">
-        <img class="spacey-card__img" id="spaceyCardImg" src="assets/card-ar-1.jpg" alt="AR/VR & 3D content sample">
-      </div>
-      <div class="spacey-card__body">
-        <span class="spacey-card__cat">AR/VR &amp; 3D Content</span>
-        <h3 class="spacey-card__title">Scaling Creative Production with AI Systems</h3>
-        <p class="spacey-card__desc">This case study examines how we improved customer support for a software company.</p>
-      </div>
-    </article>
-  </div>
-</section>
+<style>
+  /* Shared tokens for the new text blocks */
+  .spacey-intro, .spacey-herocap{
+    --display: 'Clash Display', 'Archivo Black', Impact, sans-serif;
+    --body: 'Helvetica Neue', Arial, sans-serif;
+    background:#05060a; color:#e8ecf5;
+  }
+  .spacey-intro{ padding:clamp(56px,9vw,110px) 0 clamp(32px,5vw,56px); }
+  .spacey-intro__inner, .spacey-herocap__inner{
+    max-width:820px; margin:0 auto; padding:0 clamp(20px,5vw,48px);
+  }
+  .spacey-intro__title{
+    margin:0 0 18px;
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(26px,4.2vw,44px);
+    line-height:1.12;
+    letter-spacing:.02em;
+  }
+  .spacey-intro__text{
+    margin:0; font-family:var(--body);
+    font-size:clamp(14.5px,1.5vw,17px); line-height:1.65; color:#98a2b8;
+  }
+
+  /* ---- Hero ---- */
+  .spacey-hero{ position: relative; background:#05060a; }
+  .spacey-hero__track{ position: relative; height: 360vh; }
+  .spacey-hero__sticky{
+    position: sticky; top: 0;
+    height: 100vh; width: 100%;
+    overflow: hidden; background:#05060a;
+  }
+  .spacey-hero__canvas{ display:block; width:100%; height:100%; }
+
+  /* Scroll-synced overlay copy */
+  .spacey-hero__copy{
+    position:absolute; inset:0; z-index:2;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:clamp(8px,1.6vh,18px);
+    text-align:center; padding:0 5vw; pointer-events:none;
+  }
+  .spacey-hero__line{
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:700; text-transform:uppercase;
+    /* sized so the longer second line stays on one row on desktop */
+    font-size:clamp(20px,4vw,56px);
+    line-height:1.12;
+    letter-spacing:.08em;
+    color:#fff;
+    /* high contrast against the light fog */
+    text-shadow:0 2px 24px rgba(0,0,0,.75), 0 0 60px rgba(0,0,0,.5);
+    opacity:0; transform:translateY(18px);
+    will-change:opacity, transform;
+  }
+
+  /* Loading overlay */
+  .spacey-hero__loading{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    background:#05060a; color:#e8ecf5;
+    font-family:'Helvetica Neue',Arial,sans-serif; letter-spacing:.18em; font-size:14px;
+    transition:opacity .5s ease; z-index:3;
+  }
+  .spacey-hero__loading.is-hidden{ opacity:0; pointer-events:none; }
+  .spacey-hero__spinner{
+    width:34px; height:34px; border-radius:50%;
+    border:2px solid rgba(255,255,255,.15); border-top-color:#e8ecf5;
+    animation:spaceySpin .8s linear infinite;
+  }
+  @keyframes spaceySpin{ to{ transform:rotate(360deg); } }
+
+  /* ---- Caption under hero ---- */
+  .spacey-herocap{ padding:clamp(28px,4.5vw,56px) 0 clamp(40px,6vw,72px); }
+  .spacey-herocap__text{
+    margin:0; font-family:var(--body);
+    font-size:clamp(13px,1.35vw,15px); line-height:1.6; color:#79839a;
+    border-left:2px solid rgba(255,255,255,.14); padding-left:16px;
+  }
+</style>
 
 <script>
-/* ---------- SECTION 1 : hero scroll-scrub ---------- */
 (function(){
   var FRAME_COUNT = 125;
   var pad = function(n){ return ('000'+n).slice(-3); };
@@ -121,6 +166,8 @@
   var track   = document.getElementById('spaceyHeroTrack');
   var loading = document.getElementById('spaceyHeroLoading');
   var pctEl   = document.getElementById('spaceyHeroPct');
+  var line1   = document.getElementById('spaceyLine1');
+  var line2   = document.getElementById('spaceyLine2');
 
   var images = new Array(FRAME_COUNT);
   var loaded = 0, ready = false;
@@ -134,6 +181,7 @@
     currentFrame = -1;
     if (ready) draw(targetFrame);
   }
+
   function drawCover(img){
     var cw = canvas.width, ch = canvas.height;
     var iw = img.naturalWidth, ih = img.naturalHeight;
@@ -143,7 +191,11 @@
     ctx.clearRect(0,0,cw,ch);
     ctx.drawImage(img, (cw-dw)/2, (ch-dh)/2, dw, dh);
   }
-  function draw(i){ var img = images[i]; if(img && img.complete){ drawCover(img); currentFrame = i; } }
+
+  function draw(i){
+    var img = images[i];
+    if(img && img.complete){ drawCover(img); currentFrame = i; }
+  }
 
   function preload(){
     for(var i=0;i<FRAME_COUNT;i++){
@@ -159,6 +211,7 @@
       })(i);
     }
   }
+
   function onReady(){ ready = true; resize(); draw(0); loading.classList.add('is-hidden'); }
 
   function progress(){
@@ -168,6 +221,25 @@
     var p = -rect.top / dist;
     return p<0?0:(p>1?1:p);
   }
+
+  // Smooth 0..1 ramp between two progress points
+  function ramp(p, a, b){
+    var t = (p - a) / (b - a);
+    t = t < 0 ? 0 : (t > 1 ? 1 : t);
+    return t*t*(3 - 2*t);
+  }
+
+  function applyCopy(p){
+    // Phase 1 (~frames 1-50 => p 0-0.40): line 1 fades in and holds
+    var o1 = ramp(p, 0.04, 0.15);
+    // Phase 2 (~frames 51-120 => p 0.40-0.96): line 2 fades in below
+    var o2 = ramp(p, 0.42, 0.55);
+    line1.style.opacity = o1;
+    line1.style.transform = 'translateY('+((1-o1)*18).toFixed(1)+'px)';
+    line2.style.opacity = o2;
+    line2.style.transform = 'translateY('+((1-o2)*18).toFixed(1)+'px)';
+  }
+
   var ticking = false;
   function onScroll(){
     if(ticking) return;
@@ -177,45 +249,249 @@
         var p = progress();
         targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
         if(ready && targetFrame!==currentFrame) draw(targetFrame);
+        applyCopy(p);
       } finally {
         ticking = false;   // always release the throttle, even if a draw throws
       }
     });
   }
+
   window.addEventListener('scroll', onScroll, {passive:true});
   window.addEventListener('resize', function(){ dpr = Math.min(window.devicePixelRatio||1,2); resize(); onScroll(); });
+
   preload();
   onScroll();
 })();
+</script>
 
-/* ---------- SECTION 3 : card flicker hover ---------- */
-(function(){
-  var IMG_DEFAULT = 'assets/card-ar-1.jpg';
-  var IMG_HOVER   = 'assets/card-ar-2.jpg';
-  var card = document.getElementById('spaceyCard');
-  var img  = document.getElementById('spaceyCardImg');
-  var pre = new Image(); pre.src = IMG_HOVER;
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 2: MOODBOARD (static grid, no JS) + CAPTION -->
+<!-- Self-contained. Paste into a Webflow Embed block, or rebuild -->
+<!-- later with native Webflow Image + Grid elements.            -->
+<!-- Requires: assets/moodboard-1.jpg ... moodboard-5.jpg        -->
+<!-- ============================================================= -->
 
-  var timers = [];
-  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
-  function rand(min,max){ return min + Math.random()*(max-min); }
-  function flicker(){
-    clearTimers();
-    var toggles = 3 + Math.floor(Math.random()*2);
-    var t = 0, showHover = true;
-    for(var i=0;i<toggles;i++){
-      (function(src){ timers.push(setTimeout(function(){ img.src = src; }, t)); })(showHover ? IMG_HOVER : IMG_DEFAULT);
-      showHover = !showHover;
-      t += rand(40,180);
-    }
-    timers.push(setTimeout(function(){ img.src = IMG_HOVER; }, t));
+<section class="spacey-moodboard">
+  <div class="spacey-moodboard__inner">
+    <div class="spacey-moodboard__grid">
+      <!-- EDIT: moodboard images -->
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
+      <figure class="spacey-moodboard__cell"><img src="assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
+    </div>
+    <!-- EDIT: moodboard caption -->
+    <p class="spacey-moodboard__caption">
+      General moodboard of the visual states and treatments that will appear throughout the site
+      as background/supporting imagery.
+    </p>
+  </div>
+</section>
+
+<style>
+  .spacey-moodboard{ background:#05060a; padding:clamp(40px,7vw,96px) 0; border-top:1px solid rgba(255,255,255,.12); }
+  .spacey-moodboard__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+  .spacey-moodboard__grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:clamp(10px,1.4vw,20px);
   }
-  function reset(){ clearTimers(); img.src = IMG_DEFAULT; }
-  card.addEventListener('mouseenter', flicker);
-  card.addEventListener('mouseleave', reset);
-  card.addEventListener('focus', flicker);
-  card.addEventListener('blur', reset);
+  .spacey-moodboard__cell{ margin:0; overflow:hidden; border-radius:12px; background:#0c0e14; }
+  .spacey-moodboard__cell img{
+    display:block; width:100%; height:100%;
+    aspect-ratio:4/3;                 /* consistent ratio across all cells */
+    object-fit:cover;                 /* crop instead of distort */
+    transition:transform .5s ease;
+  }
+  .spacey-moodboard__cell:hover img{ transform:scale(1.03); }
+
+  /* Let the 5th image span two columns so the grid stays balanced. */
+  .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+
+  .spacey-moodboard__caption{
+    margin:clamp(20px,2.6vw,30px) 0 0;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:clamp(13px,1.35vw,15px); line-height:1.6; color:#79839a;
+    border-left:2px solid rgba(255,255,255,.14); padding-left:16px;
+    max-width:760px;
+  }
+
+  @media (max-width:720px){
+    .spacey-moodboard__grid{ grid-template-columns:repeat(2,1fr); }
+    .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+  }
+</style>
+
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 3: SAMPLE CARDS (2 up) + FLICKER HOVER      -->
+<!-- Self-contained. Paste into a Webflow Embed block.            -->
+<!-- Requires: assets/card-ar-1.jpg / card-ar-2.jpg               -->
+<!--           assets/card-audio-1.jpg / card-audio-2.jpg         -->
+<!-- Each card: data-img-default / data-img-hover drive the       -->
+<!-- flicker; --accent sets the category colour-coding.           -->
+<!-- ============================================================= -->
+
+<section class="spacey-cardsec">
+  <div class="spacey-cardsec__inner">
+
+    <!-- EDIT: cards caption -->
+    <p class="spacey-cardsec__caption">
+      Example: Insights/Case Studies card template — showing the hover behavior and category
+      color-coding system.
+    </p>
+
+    <div class="spacey-cardsec__grid">
+
+      <!-- ---------- CARD 1 ---------- -->
+      <article class="spacey-card" tabindex="0"
+               style="--accent:#7cf3d0; --glow:rgba(124,243,208,.30)"
+               data-img-default="assets/card-ar-1.jpg"
+               data-img-hover="assets/card-ar-2.jpg">
+        <div class="spacey-card__media">
+          <!-- EDIT: card 1 default image -->
+          <img class="spacey-card__img" src="assets/card-ar-1.jpg" alt="AR/VR &amp; 3D content sample">
+        </div>
+        <div class="spacey-card__body">
+          <!-- EDIT: card 1 category -->
+          <span class="spacey-card__cat">AR/VR &amp; 3D Content</span>
+          <!-- EDIT: card 1 title -->
+          <h3 class="spacey-card__title">Scaling Creative Production with AI Systems</h3>
+          <!-- EDIT: card 1 description -->
+          <p class="spacey-card__desc">This case study examines how we improved customer support for a software company.</p>
+        </div>
+      </article>
+
+      <!-- ---------- CARD 2 ---------- -->
+      <article class="spacey-card" tabindex="0"
+               style="--accent:#b39cff; --glow:rgba(179,156,255,.32)"
+               data-img-default="assets/card-audio-1.jpg"
+               data-img-hover="assets/card-audio-2.jpg">
+        <div class="spacey-card__media">
+          <!-- EDIT: card 2 default image -->
+          <img class="spacey-card__img" src="assets/card-audio-1.jpg" alt="Audio &amp; sound design sample">
+        </div>
+        <div class="spacey-card__body">
+          <!-- EDIT: card 2 category -->
+          <span class="spacey-card__cat">Audio &amp; Sound Design</span>
+          <!-- EDIT: card 2 title -->
+          <h3 class="spacey-card__title">Building a Sonic Identity for Digital Products</h3>
+          <!-- EDIT: card 2 description -->
+          <p class="spacey-card__desc">This case study explores how sound design shaped a consistent brand experience across platforms.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .spacey-cardsec{
+    /* A background so the glass blur has something to refract. */
+    background:
+      radial-gradient(120% 120% at 20% 10%, rgba(124,243,208,.18), transparent 55%),
+      radial-gradient(120% 120% at 85% 90%, rgba(120,140,255,.20), transparent 55%),
+      #070812;
+    padding:clamp(48px,9vw,120px) 20px;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .spacey-cardsec__inner{ max-width:860px; margin:0 auto; }
+
+  .spacey-cardsec__caption{
+    margin:0 0 clamp(24px,3vw,38px);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:clamp(13px,1.35vw,15px); line-height:1.6; color:#8b94a8;
+    border-left:2px solid rgba(255,255,255,.16); padding-left:16px;
+    max-width:720px;
+  }
+
+  .spacey-cardsec__grid{
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:clamp(16px,2.4vw,28px);
+  }
+
+  .spacey-card{
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    background:rgba(255,255,255,.06);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:
+      inset 0 0 24px rgba(255,255,255,.15),   /* soft white inner glow */
+      0 18px 50px rgba(0,0,0,.45);
+    transform:scale(1);
+    transition:transform .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease;
+    outline:none;
+  }
+  .spacey-card:hover, .spacey-card:focus-visible{
+    transform:scale(1.02);
+    box-shadow:
+      inset 0 0 30px rgba(255,255,255,.22),
+      0 0 34px var(--glow),
+      0 22px 60px rgba(0,0,0,.5);
+  }
+
+  .spacey-card__media{ aspect-ratio:4/3; overflow:hidden; background:#0c0e14; }
+  .spacey-card__img{ display:block; width:100%; height:100%; object-fit:cover; }
+
+  .spacey-card__body{ padding:18px 20px 22px; color:#eef1f8; font-family:'Helvetica Neue',Arial,sans-serif; }
+  .spacey-card__cat{
+    display:inline-block; margin-bottom:10px;
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--accent); font-weight:700;      /* category colour-coding */
+  }
+  .spacey-card__title{ margin:0 0 8px; font-size:19px; line-height:1.3; font-weight:700; }
+  .spacey-card__desc{ margin:0; font-size:13.5px; line-height:1.55; color:#aeb6c7; }
+
+  @media (max-width:680px){
+    .spacey-cardsec__grid{ grid-template-columns:1fr; }
+  }
+</style>
+
+<script>
+(function(){
+  var cards = document.querySelectorAll('.spacey-cardsec .spacey-card');
+
+  function rand(min,max){ return min + Math.random()*(max-min); }
+
+  Array.prototype.forEach.call(cards, function(card){
+    var img      = card.querySelector('.spacey-card__img');
+    var IMG_DEF  = card.getAttribute('data-img-default');
+    var IMG_HOV  = card.getAttribute('data-img-hover');
+    if(!img || !IMG_DEF || !IMG_HOV) return;
+
+    // Preload the hover frame so the flicker has no load flash.
+    var pre = new Image(); pre.src = IMG_HOV;
+
+    var timers = [];
+    function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+    function flicker(){
+      clearTimers();
+      // Toggle default<->hover a few times with randomized gaps, then settle on hover.
+      var toggles = 3 + Math.floor(Math.random()*2);   // 3 or 4 flickers
+      var t = 0, showHover = true;
+      for(var i=0;i<toggles;i++){
+        (function(src){
+          timers.push(setTimeout(function(){ img.src = src; }, t));
+        })(showHover ? IMG_HOV : IMG_DEF);
+        showHover = !showHover;
+        t += rand(40,180);
+      }
+      timers.push(setTimeout(function(){ img.src = IMG_HOV; }, t));
+    }
+
+    function reset(){ clearTimers(); img.src = IMG_DEF; }
+
+    card.addEventListener('mouseenter', flicker);
+    card.addEventListener('mouseleave', reset);
+    card.addEventListener('focus', flicker);
+    card.addEventListener('blur', reset);
+  });
 })();
 </script>
+
 </body>
 </html>

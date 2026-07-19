@@ -1,9 +1,32 @@
 <!-- ============================================================= -->
-<!-- SPAC3Y — SECTION 1: HERO SCROLL ANIMATION                    -->
+<!-- SPAC3Y — SECTION 1: INTRO + HERO SCROLL ANIMATION + CAPTION  -->
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
-<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v3/assets/frames/frame_001.webp ... frame_125.webp    -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/frames/frame_001.webp ... frame_125.webp    -->
 <!-- ============================================================= -->
 
+<!-- Display typeface: Clash Display (Fontshare) + Archivo Black (Google) as fallback -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
+<!-- ---------- INTRO BLOCK (above the hero animation) ---------- -->
+<section class="spacey-intro">
+  <div class="spacey-intro__inner">
+    <!-- EDIT: intro heading -->
+    <h2 class="spacey-intro__title">Visual Direction — Moodboard</h2>
+    <!-- EDIT: intro paragraph -->
+    <p class="spacey-intro__text">
+      The motif is a single dark crystalline form moving through three states: scattered fragments,
+      a glowing lattice, and a fused monolith. It reads as data becoming physical — raw, disconnected
+      information pulling itself into structure, then into something solid and permanent.
+      The direction deliberately avoids the usual AI clichés: no robots, no holograms, no glowing screens.
+    </p>
+  </div>
+</section>
+
+<!-- ---------- HERO SCROLL ANIMATION ---------- -->
 <section class="spacey-hero" id="spaceyHero">
   <!-- Scroll track: its height defines how much scroll distance the scrub uses -->
   <div class="spacey-hero__track" id="spaceyHeroTrack">
@@ -16,21 +39,84 @@
         <div class="spacey-hero__spinner"></div>
         <div class="spacey-hero__loadtxt"><span id="spaceyHeroPct">0</span>%</div>
       </div>
+
+      <!-- Scroll-synced copy over the canvas -->
+      <div class="spacey-hero__copy">
+        <!-- EDIT: hero line 1 (fades in during the "scattered" phase) -->
+        <div class="spacey-hero__line" id="spaceyLine1">We help brands turn</div>
+        <!-- EDIT: hero line 2 (fades in during the "lattice → monolith" phase) -->
+        <div class="spacey-hero__line" id="spaceyLine2">Digital complexity into growth</div>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ---------- CAPTION UNDER THE HERO ---------- -->
+<section class="spacey-herocap">
+  <div class="spacey-herocap__inner">
+    <!-- EDIT: hero caption -->
+    <p class="spacey-herocap__text">
+      This is a concept preview of the main homepage hero banner. In the final version, text placement
+      and responsive behavior will be fully adapted for mobile and tablet — this free sample was put
+      together quickly to validate the direction, not polished to final production quality.
+    </p>
+  </div>
+</section>
+
 <style>
+  /* Shared tokens for the new text blocks */
+  .spacey-intro, .spacey-herocap{
+    --display: 'Clash Display', 'Archivo Black', Impact, sans-serif;
+    --body: 'Helvetica Neue', Arial, sans-serif;
+    background:#05060a; color:#e8ecf5;
+  }
+  .spacey-intro{ padding:clamp(56px,9vw,110px) 0 clamp(32px,5vw,56px); }
+  .spacey-intro__inner, .spacey-herocap__inner{
+    max-width:820px; margin:0 auto; padding:0 clamp(20px,5vw,48px);
+  }
+  .spacey-intro__title{
+    margin:0 0 18px;
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(26px,4.2vw,44px);
+    line-height:1.12;
+    letter-spacing:.02em;
+  }
+  .spacey-intro__text{
+    margin:0; font-family:var(--body);
+    font-size:clamp(14.5px,1.5vw,17px); line-height:1.65; color:#98a2b8;
+  }
+
+  /* ---- Hero ---- */
   .spacey-hero{ position: relative; background:#05060a; }
-  /* Height = number of extra viewports of scroll used to scrub. */
   .spacey-hero__track{ position: relative; height: 360vh; }
   .spacey-hero__sticky{
     position: sticky; top: 0;
     height: 100vh; width: 100%;
-    overflow: hidden;
-    background:#05060a;
+    overflow: hidden; background:#05060a;
   }
   .spacey-hero__canvas{ display:block; width:100%; height:100%; }
+
+  /* Scroll-synced overlay copy */
+  .spacey-hero__copy{
+    position:absolute; inset:0; z-index:2;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:clamp(8px,1.6vh,18px);
+    text-align:center; padding:0 5vw; pointer-events:none;
+  }
+  .spacey-hero__line{
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:700; text-transform:uppercase;
+    /* sized so the longer second line stays on one row on desktop */
+    font-size:clamp(20px,4vw,56px);
+    line-height:1.12;
+    letter-spacing:.08em;
+    color:#fff;
+    /* high contrast against the light fog */
+    text-shadow:0 2px 24px rgba(0,0,0,.75), 0 0 60px rgba(0,0,0,.5);
+    opacity:0; transform:translateY(18px);
+    will-change:opacity, transform;
+  }
 
   /* Loading overlay */
   .spacey-hero__loading{
@@ -47,19 +133,29 @@
     animation:spaceySpin .8s linear infinite;
   }
   @keyframes spaceySpin{ to{ transform:rotate(360deg); } }
+
+  /* ---- Caption under hero ---- */
+  .spacey-herocap{ padding:clamp(28px,4.5vw,56px) 0 clamp(40px,6vw,72px); }
+  .spacey-herocap__text{
+    margin:0; font-family:var(--body);
+    font-size:clamp(13px,1.35vw,15px); line-height:1.6; color:#79839a;
+    border-left:2px solid rgba(255,255,255,.14); padding-left:16px;
+  }
 </style>
 
 <script>
 (function(){
   var FRAME_COUNT = 125;
   var pad = function(n){ return ('000'+n).slice(-3); };
-  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v3/assets/frames/frame_'+pad(i)+'.webp'; };
+  var framePath = function(i){ return 'https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v4/assets/frames/frame_'+pad(i)+'.webp'; };
 
   var canvas  = document.getElementById('spaceyHeroCanvas');
   var ctx     = canvas.getContext('2d');
   var track   = document.getElementById('spaceyHeroTrack');
   var loading = document.getElementById('spaceyHeroLoading');
   var pctEl   = document.getElementById('spaceyHeroPct');
+  var line1   = document.getElementById('spaceyLine1');
+  var line2   = document.getElementById('spaceyLine2');
 
   var images = new Array(FRAME_COUNT);
   var loaded = 0, ready = false;
@@ -70,7 +166,7 @@
     var w = canvas.clientWidth, h = canvas.clientHeight;
     canvas.width  = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
-    currentFrame = -1;          // force redraw at new size
+    currentFrame = -1;
     if (ready) draw(targetFrame);
   }
 
@@ -89,7 +185,6 @@
     if(img && img.complete){ drawCover(img); currentFrame = i; }
   }
 
-  // Preload every frame; show % progress; reveal when done.
   function preload(){
     for(var i=0;i<FRAME_COUNT;i++){
       (function(idx){
@@ -107,13 +202,30 @@
 
   function onReady(){ ready = true; resize(); draw(0); loading.classList.add('is-hidden'); }
 
-  // Scroll progress (0..1) through the track.
   function progress(){
     var rect = track.getBoundingClientRect();
     var dist = rect.height - window.innerHeight;
     if(dist<=0) return 0;
     var p = -rect.top / dist;
     return p<0?0:(p>1?1:p);
+  }
+
+  // Smooth 0..1 ramp between two progress points
+  function ramp(p, a, b){
+    var t = (p - a) / (b - a);
+    t = t < 0 ? 0 : (t > 1 ? 1 : t);
+    return t*t*(3 - 2*t);
+  }
+
+  function applyCopy(p){
+    // Phase 1 (~frames 1-50 => p 0-0.40): line 1 fades in and holds
+    var o1 = ramp(p, 0.04, 0.15);
+    // Phase 2 (~frames 51-120 => p 0.40-0.96): line 2 fades in below
+    var o2 = ramp(p, 0.42, 0.55);
+    line1.style.opacity = o1;
+    line1.style.transform = 'translateY('+((1-o1)*18).toFixed(1)+'px)';
+    line2.style.opacity = o2;
+    line2.style.transform = 'translateY('+((1-o2)*18).toFixed(1)+'px)';
   }
 
   var ticking = false;
@@ -125,6 +237,7 @@
         var p = progress();
         targetFrame = Math.min(FRAME_COUNT-1, Math.round(p*(FRAME_COUNT-1)));
         if(ready && targetFrame!==currentFrame) draw(targetFrame);
+        applyCopy(p);
       } finally {
         ticking = false;   // always release the throttle, even if a draw throws
       }

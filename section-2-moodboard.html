@@ -1,5 +1,5 @@
 <!-- ============================================================= -->
-<!-- SPAC3Y — SECTION 2: MOODBOARD (static grid, no JS)           -->
+<!-- SPAC3Y — SECTION 2: MOODBOARD (static grid, no JS) + CAPTION -->
 <!-- Self-contained. Paste into a Webflow Embed block, or rebuild -->
 <!-- later with native Webflow Image + Grid elements.            -->
 <!-- Requires: assets/moodboard-1.jpg ... moodboard-5.jpg        -->
@@ -8,12 +8,18 @@
 <section class="spacey-moodboard">
   <div class="spacey-moodboard__inner">
     <div class="spacey-moodboard__grid">
+      <!-- EDIT: moodboard images -->
       <figure class="spacey-moodboard__cell"><img src="assets/moodboard-1.jpg" alt="Moodboard 1" loading="lazy"></figure>
       <figure class="spacey-moodboard__cell"><img src="assets/moodboard-2.jpg" alt="Moodboard 2" loading="lazy"></figure>
       <figure class="spacey-moodboard__cell"><img src="assets/moodboard-3.jpg" alt="Moodboard 3" loading="lazy"></figure>
       <figure class="spacey-moodboard__cell"><img src="assets/moodboard-4.jpg" alt="Moodboard 4" loading="lazy"></figure>
       <figure class="spacey-moodboard__cell"><img src="assets/moodboard-5.jpg" alt="Moodboard 5" loading="lazy"></figure>
     </div>
+    <!-- EDIT: moodboard caption -->
+    <p class="spacey-moodboard__caption">
+      General moodboard of the visual states and treatments that will appear throughout the site
+      as background/supporting imagery.
+    </p>
   </div>
 </section>
 
@@ -36,6 +42,14 @@
 
   /* Let the 5th image span two columns so the grid stays balanced. */
   .spacey-moodboard__cell:nth-child(5){ grid-column:span 2; }
+
+  .spacey-moodboard__caption{
+    margin:clamp(20px,2.6vw,30px) 0 0;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:clamp(13px,1.35vw,15px); line-height:1.6; color:#79839a;
+    border-left:2px solid rgba(255,255,255,.14); padding-left:16px;
+    max-width:760px;
+  }
 
   @media (max-width:720px){
     .spacey-moodboard__grid{ grid-template-columns:repeat(2,1fr); }
