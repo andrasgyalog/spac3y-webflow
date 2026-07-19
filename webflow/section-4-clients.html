@@ -2,7 +2,7 @@
 <!-- SPAC3Y — SECTION 4: UI ELEMENT FOR THE                       -->
 <!--          "What clients usually come to us for" ZONE          -->
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
-<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v12/assets/tokens-loop.mp4  (seamless boomerang loop)  -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v13/assets/tokens-loop.mp4  (seamless boomerang loop)  -->
 <!--                                                              -->
 <!-- Title size is pure CSS: container query units (cqw) tie the  -->
 <!-- font-size to the width of the text column, so each word      -->
@@ -50,7 +50,7 @@
 
       <!-- EDIT: card video (boomerang loop, normal speed) -->
       <video class="spacey-ccard__video" id="spaceyCCardVideo"
-             src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v12/assets/tokens-loop.mp4"
+             src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v13/assets/tokens-loop.mp4"
              autoplay loop muted playsinline preload="auto"
              disablepictureinpicture aria-hidden="true"></video>
     </article>
@@ -137,7 +137,7 @@
   .spacey-ccard__body{
     position:relative; z-index:3;
     width:calc(100% - var(--video-w));
-    padding:clamp(20px,2.6vw,32px) clamp(12px,1.4vw,18px) clamp(20px,2.6vw,32px) clamp(20px,2.6vw,30px);
+    padding:clamp(20px,2.6vw,32px) clamp(20px,2.6vw,30px);
   }
 
   /* ---------- Giant title ---------- */
@@ -157,14 +157,14 @@
   }
   /* Fallback for browsers without container query units */
   .spacey-ccard__giantline--a{ font-size:clamp(22px,4.6vw,52px); }
-  .spacey-ccard__giantline--b{ font-size:clamp(28px,5.8vw,66px); }
+  .spacey-ccard__giantline--b{ font-size:clamp(25px,5.1vw,58px); }
 
   /* Preferred: size follows the column width exactly, no JS.
      Values are tuned per word length (TOKENIZED = 9 chars, LOYALTY = 7). */
   @supports (font-size:1cqw){
     .spacey-ccard__body{ container-type:inline-size; }
     .spacey-ccard__giantline--a{ font-size:17cqw; }
-    .spacey-ccard__giantline--b{ font-size:21.5cqw; }
+    .spacey-ccard__giantline--b{ font-size:19cqw; }
   }
 
   /* ---------- Dashed rules ---------- */
