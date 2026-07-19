@@ -531,10 +531,15 @@
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
 
 <section class="spacey-cardsec">
+  <!-- drifting blurred blobs in brand blue/violet -->
+  <div class="spacey-blob spacey-blob--1" aria-hidden="true"></div>
+  <div class="spacey-blob spacey-blob--2" aria-hidden="true"></div>
+  <div class="spacey-blob spacey-blob--3" aria-hidden="true"></div>
+
   <div class="spacey-cardsec__inner">
 
     <!-- EDIT: section label -->
-    <div class="spacey-seclabel spacey-seclabel--cards">Cases cards design + animation</div>
+    <div class="spacey-seclabel spacey-seclabel--cards">Insight/cases cards design</div>
 
     <!-- EDIT: cards caption -->
     <p class="spacey-cardsec__caption">
@@ -588,15 +593,57 @@
 
 <style>
   .spacey-cardsec{
-    /* A background so the glass blur has something to refract. */
-    background:
-      radial-gradient(120% 120% at 20% 10%, rgba(124,243,208,.18), transparent 55%),
-      radial-gradient(120% 120% at 85% 90%, rgba(120,140,255,.20), transparent 55%),
-      #070812;
+    position:relative; overflow:hidden;
+    /* deep brand base — the blobs supply the colour */
+    background:#070812;
     padding:clamp(48px,9vw,120px) 20px;
     border-top:1px solid rgba(255,255,255,.12);
   }
-  .spacey-cardsec__inner{ max-width:860px; margin:0 auto; }
+  .spacey-cardsec__inner{ position:relative; z-index:1; max-width:860px; margin:0 auto; }
+
+  /* ---------- Floating blurred blobs (brand blue → violet) ---------- */
+  .spacey-blob{
+    position:absolute; z-index:0; pointer-events:none;
+    border-radius:50%;
+    filter:blur(90px);
+    will-change:transform;
+  }
+  .spacey-blob--1{
+    width:46vw; height:46vw; max-width:620px; max-height:620px;
+    top:-12%; left:-8%;
+    background:radial-gradient(circle, rgba(91,91,245,.55) 0%, rgba(91,91,245,.18) 45%, transparent 70%);
+    animation:spaceyBlob1 26s ease-in-out infinite alternate;
+  }
+  .spacey-blob--2{
+    width:40vw; height:40vw; max-width:540px; max-height:540px;
+    bottom:-14%; right:-6%;
+    background:radial-gradient(circle, rgba(140,90,255,.50) 0%, rgba(140,90,255,.16) 45%, transparent 70%);
+    animation:spaceyBlob2 32s ease-in-out infinite alternate;
+  }
+  .spacey-blob--3{
+    width:32vw; height:32vw; max-width:430px; max-height:430px;
+    top:34%; left:46%;
+    background:radial-gradient(circle, rgba(70,120,255,.42) 0%, rgba(70,120,255,.12) 45%, transparent 70%);
+    animation:spaceyBlob3 22s ease-in-out infinite alternate;
+  }
+  @keyframes spaceyBlob1{
+    0%   { transform:translate3d(0,0,0)          scale(1); }
+    50%  { transform:translate3d(14vw,10vh,0)    scale(1.15); }
+    100% { transform:translate3d(6vw,22vh,0)     scale(.92); }
+  }
+  @keyframes spaceyBlob2{
+    0%   { transform:translate3d(0,0,0)          scale(1); }
+    50%  { transform:translate3d(-16vw,-12vh,0)  scale(1.2); }
+    100% { transform:translate3d(-6vw,-24vh,0)   scale(.95); }
+  }
+  @keyframes spaceyBlob3{
+    0%   { transform:translate3d(0,0,0)          scale(.95); }
+    50%  { transform:translate3d(-12vw,14vh,0)   scale(1.25); }
+    100% { transform:translate3d(10vw,-8vh,0)    scale(1); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .spacey-blob{ animation:none; }
+  }
 
   .spacey-seclabel--cards{
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
@@ -709,9 +756,11 @@
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
 <!-- Requires: assets/tokens-loop.mp4  (seamless boomerang loop)  -->
 <!--                                                              -->
-<!-- Video plays at normal speed, hard-edged, separated from the  -->
-<!-- copy by a thin white divider. On hover the two title words   -->
-<!-- centre themselves inside the title box one after the other.  -->
+<!-- Layout: giant title stretched edge-to-edge up to the white   -->
+<!-- partition, then a dashed rule, centred category, another     -->
+<!-- rule, then the supporting copy.                              -->
+<!-- The title font-size is computed in JS so each word fills the -->
+<!-- column exactly; re-measured on resize and on font swap.      -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -730,19 +779,23 @@
       <div class="spacey-ccard__glow" aria-hidden="true"></div>
 
       <div class="spacey-ccard__body">
+
+        <!-- EDIT: card title — stretched to the full column width -->
+        <h3 class="spacey-ccard__giant" id="spaceyGiant">
+          <span class="spacey-ccard__giantline">Tokenized</span>
+          <span class="spacey-ccard__giantline">Loyalty</span>
+        </h3>
+
+        <div class="spacey-ccard__rule" aria-hidden="true"></div>
+
         <!-- EDIT: card category -->
         <span class="spacey-ccard__cat">Web3 Experiences</span>
 
-        <!-- EDIT: card title — each word animates to centre on hover -->
-        <h3 class="spacey-ccard__title">
-          <span class="spacey-ccard__titlebox" id="spaceyTitleBox">
-            <span class="spacey-ccard__word">Tokenized</span>
-            <span class="spacey-ccard__word">Loyalty</span>
-          </span>
-        </h3>
+        <div class="spacey-ccard__rule" aria-hidden="true"></div>
 
         <!-- EDIT: card description -->
-        <p class="spacey-ccard__desc">Smart loyalty systems, community ownership<br>and digital rewards.</p>
+        <p class="spacey-ccard__desc">Smart loyalty systems, community ownership and digital rewards.</p>
+
       </div>
 
       <!-- white partition between copy and video -->
@@ -827,60 +880,56 @@
     filter:blur(10px);
   }
 
+  /* left column: runs from the card edge up to the partition */
   .spacey-ccard__body{
     position:relative; z-index:3;
-    padding:clamp(28px,4vw,56px);
     width:calc(100% - var(--video-w));
-  }
-  .spacey-ccard__cat{
-    display:block; margin-bottom:clamp(12px,1.4vw,18px);
-    font-family:'Helvetica Neue',Arial,sans-serif;
-    font-weight:600; font-size:clamp(14px,1.5vw,18px);
-    color:#7b7bff; letter-spacing:.005em;
+    padding:clamp(26px,3.4vw,46px) clamp(18px,2vw,28px) clamp(26px,3.4vw,46px) clamp(26px,3.4vw,46px);
   }
 
-  /* ---------- Title box + word centring ---------- */
-  .spacey-ccard__title{ margin:0 0 clamp(14px,1.6vw,22px); }
-  .spacey-ccard__titlebox{
-    display:block;
-    padding:.20em .46em .26em;
-    border:1px solid rgba(255,255,255,.20);
-    border-radius:12px;
-    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  /* ---------- Giant title ---------- */
+  .spacey-ccard__giant{
+    margin:0 0 clamp(14px,1.8vw,22px);
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700;
-    font-size:clamp(26px,3.6vw,44px);
-    line-height:1.10; letter-spacing:-.01em;
+    line-height:.92;
+    letter-spacing:-.02em;             /* em-based so it scales with the fitted size */
     color:#fff;
-    transition:border-color .35s ease, background .35s ease, box-shadow .35s ease;
   }
-  .spacey-ccard:hover .spacey-ccard__titlebox{
-    border-color:rgba(190,198,255,.6);
-    background:linear-gradient(180deg, rgba(123,123,255,.16), rgba(255,255,255,.03));
-    box-shadow:0 0 26px rgba(91,91,245,.30);
+  .spacey-ccard__giantline{
+    display:inline-block;              /* hugs the text so JS can measure it */
+    white-space:nowrap;
+    text-transform:uppercase;
+    font-size:56px;                    /* placeholder — JS overwrites to fit exactly */
   }
-  /* each word is its own row so it can travel independently */
-  .spacey-ccard__word{
-    display:block; width:max-content;
-    transform:translateX(0);
-    /* ease-out (expo-ish): quick departure, long soft landing */
-    transition:transform .62s cubic-bezier(.16,1,.3,1);
+  /* each word on its own row */
+  .spacey-ccard__giantline + .spacey-ccard__giantline{ margin-top:.02em; }
+  .spacey-ccard__giant > span{ display:block; }
+
+  /* ---------- Dashed rules ---------- */
+  .spacey-ccard__rule{
+    height:0;
+    border-top:1px dashed rgba(255,255,255,.28);
+    margin:clamp(14px,1.8vw,20px) 0;
+    transition:border-color .35s ease;
   }
-  /* --center is measured in JS = (box inner width - word width) / 2 */
-  .spacey-ccard:hover .spacey-ccard__word,
-  .spacey-ccard:focus-visible .spacey-ccard__word{
-    transform:translateX(var(--center,0px));
-  }
-  /* second word follows the first */
-  .spacey-ccard:hover .spacey-ccard__word:nth-child(2),
-  .spacey-ccard:focus-visible .spacey-ccard__word:nth-child(2){
-    transition-delay:.13s;
+  .spacey-ccard:hover .spacey-ccard__rule{ border-color:rgba(190,198,255,.5); }
+
+  /* ---------- Centred category ---------- */
+  .spacey-ccard__cat{
+    display:block; text-align:center;
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:600; text-transform:uppercase;
+    font-size:clamp(11px,1.15vw,15px);
+    letter-spacing:.30em;
+    color:#8f8fff;
   }
 
+  /* ---------- Supporting copy ---------- */
   .spacey-ccard__desc{
-    margin:0;
+    margin:0; text-align:center;
     font-family:'Helvetica Neue',Arial,sans-serif;
-    font-size:clamp(14px,1.5vw,18px); line-height:1.5;
+    font-size:clamp(13px,1.3vw,16px); line-height:1.55;
     color:#aab2c6;
   }
 
@@ -910,7 +959,7 @@
     pointer-events:none;
   }
 
-  /* ---------- Mobile: stack, divider becomes horizontal ---------- */
+  /* ---------- Mobile: stack, partition becomes horizontal ---------- */
   @media (max-width:720px){
     .spacey-ccard{ min-height:auto; display:block; }
     .spacey-ccard__body{ width:100%; padding:26px 22px 30px; }
@@ -927,9 +976,8 @@
 
 <script>
 (function(){
-  var card = document.getElementById('spaceyCCard');
-  var box  = document.getElementById('spaceyTitleBox');
-  var v    = document.getElementById('spaceyCCardVideo');
+  var v     = document.getElementById('spaceyCCardVideo');
+  var giant = document.getElementById('spaceyGiant');
 
   /* --- video: normal speed, just make sure it actually plays --- */
   if(v){
@@ -942,29 +990,30 @@
     }
   }
 
-  /* --- measure how far each title word must travel to sit centred --- */
-  if(!box) return;
-  var words = box.querySelectorAll('.spacey-ccard__word');
+  /* --- fit each title word to the exact column width --- */
+  if(!giant) return;
+  var lines = giant.querySelectorAll('.spacey-ccard__giantline');
+  var REF = 100;   // measure at a known size, then scale proportionally
 
-  function measure(){
-    var cs = window.getComputedStyle(box);
-    var inner = box.clientWidth
-              - parseFloat(cs.paddingLeft || 0)
-              - parseFloat(cs.paddingRight || 0);
-    Array.prototype.forEach.call(words, function(w){
-      var off = (inner - w.offsetWidth) / 2;
-      if(!isFinite(off) || off < 0) off = 0;
-      w.style.setProperty('--center', off.toFixed(1) + 'px');
+  function fit(){
+    var target = giant.clientWidth;
+    if(!target) return;
+    Array.prototype.forEach.call(lines, function(el){
+      el.style.fontSize = REF + 'px';
+      var natural = el.offsetWidth;          // inline-block hugs the text
+      if(natural > 0){
+        el.style.fontSize = (REF * target / natural).toFixed(2) + 'px';
+      }
     });
   }
 
-  measure();
-  window.addEventListener('resize', measure);
-  // widths shift once the display font swaps in
+  fit();
+  window.addEventListener('resize', fit);
+  window.addEventListener('load', fit);
+  // Clash Display swaps in asynchronously and changes the metrics
   if(document.fonts && document.fonts.ready && document.fonts.ready.then){
-    document.fonts.ready.then(measure).catch(function(){});
+    document.fonts.ready.then(fit).catch(function(){});
   }
-  window.addEventListener('load', measure);
 })();
 </script>
 

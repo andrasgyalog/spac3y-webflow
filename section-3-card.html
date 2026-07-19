@@ -11,10 +11,15 @@
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
 
 <section class="spacey-cardsec">
+  <!-- drifting blurred blobs in brand blue/violet -->
+  <div class="spacey-blob spacey-blob--1" aria-hidden="true"></div>
+  <div class="spacey-blob spacey-blob--2" aria-hidden="true"></div>
+  <div class="spacey-blob spacey-blob--3" aria-hidden="true"></div>
+
   <div class="spacey-cardsec__inner">
 
     <!-- EDIT: section label -->
-    <div class="spacey-seclabel spacey-seclabel--cards">Cases cards design + animation</div>
+    <div class="spacey-seclabel spacey-seclabel--cards">Insight/cases cards design</div>
 
     <!-- EDIT: cards caption -->
     <p class="spacey-cardsec__caption">
@@ -68,15 +73,57 @@
 
 <style>
   .spacey-cardsec{
-    /* A background so the glass blur has something to refract. */
-    background:
-      radial-gradient(120% 120% at 20% 10%, rgba(124,243,208,.18), transparent 55%),
-      radial-gradient(120% 120% at 85% 90%, rgba(120,140,255,.20), transparent 55%),
-      #070812;
+    position:relative; overflow:hidden;
+    /* deep brand base — the blobs supply the colour */
+    background:#070812;
     padding:clamp(48px,9vw,120px) 20px;
     border-top:1px solid rgba(255,255,255,.12);
   }
-  .spacey-cardsec__inner{ max-width:860px; margin:0 auto; }
+  .spacey-cardsec__inner{ position:relative; z-index:1; max-width:860px; margin:0 auto; }
+
+  /* ---------- Floating blurred blobs (brand blue → violet) ---------- */
+  .spacey-blob{
+    position:absolute; z-index:0; pointer-events:none;
+    border-radius:50%;
+    filter:blur(90px);
+    will-change:transform;
+  }
+  .spacey-blob--1{
+    width:46vw; height:46vw; max-width:620px; max-height:620px;
+    top:-12%; left:-8%;
+    background:radial-gradient(circle, rgba(91,91,245,.55) 0%, rgba(91,91,245,.18) 45%, transparent 70%);
+    animation:spaceyBlob1 26s ease-in-out infinite alternate;
+  }
+  .spacey-blob--2{
+    width:40vw; height:40vw; max-width:540px; max-height:540px;
+    bottom:-14%; right:-6%;
+    background:radial-gradient(circle, rgba(140,90,255,.50) 0%, rgba(140,90,255,.16) 45%, transparent 70%);
+    animation:spaceyBlob2 32s ease-in-out infinite alternate;
+  }
+  .spacey-blob--3{
+    width:32vw; height:32vw; max-width:430px; max-height:430px;
+    top:34%; left:46%;
+    background:radial-gradient(circle, rgba(70,120,255,.42) 0%, rgba(70,120,255,.12) 45%, transparent 70%);
+    animation:spaceyBlob3 22s ease-in-out infinite alternate;
+  }
+  @keyframes spaceyBlob1{
+    0%   { transform:translate3d(0,0,0)          scale(1); }
+    50%  { transform:translate3d(14vw,10vh,0)    scale(1.15); }
+    100% { transform:translate3d(6vw,22vh,0)     scale(.92); }
+  }
+  @keyframes spaceyBlob2{
+    0%   { transform:translate3d(0,0,0)          scale(1); }
+    50%  { transform:translate3d(-16vw,-12vh,0)  scale(1.2); }
+    100% { transform:translate3d(-6vw,-24vh,0)   scale(.95); }
+  }
+  @keyframes spaceyBlob3{
+    0%   { transform:translate3d(0,0,0)          scale(.95); }
+    50%  { transform:translate3d(-12vw,14vh,0)   scale(1.25); }
+    100% { transform:translate3d(10vw,-8vh,0)    scale(1); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .spacey-blob{ animation:none; }
+  }
 
   .spacey-seclabel--cards{
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
