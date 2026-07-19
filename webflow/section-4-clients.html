@@ -1,0 +1,157 @@
+<!-- ============================================================= -->
+<!-- SPAC3Y — SECTION 4: "WHAT CLIENTS COME TO US FOR" CARD       -->
+<!-- Self-contained. Paste into a Webflow Embed block.            -->
+<!-- Requires: https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v7/assets/tokens-loop.mp4  (seamless boomerang loop)  -->
+<!--                                                              -->
+<!-- The video is a normal opaque clip; its left edge is faded    -->
+<!-- into the card with a CSS mask (mask-image), so it blends     -->
+<!-- into the real card background instead of a baked-in colour.  -->
+<!-- Tweak the mask stops below to change how far it bleeds.      -->
+<!-- ============================================================= -->
+
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+
+<section class="spacey-clients">
+  <div class="spacey-clients__inner">
+
+    <!-- EDIT: section label -->
+    <div class="spacey-seclabel spacey-seclabel--clients">Services block</div>
+    <!-- EDIT: section heading -->
+    <h2 class="spacey-clients__heading">What clients usually come to us for</h2>
+
+    <!-- ---------- CARD ---------- -->
+    <article class="spacey-ccard">
+      <div class="spacey-ccard__glow" aria-hidden="true"></div>
+
+      <div class="spacey-ccard__body">
+        <!-- EDIT: card category -->
+        <span class="spacey-ccard__cat">Web3 Experiences</span>
+        <!-- EDIT: card title -->
+        <h3 class="spacey-ccard__title">Tokenized Loyalty</h3>
+        <!-- EDIT: card description -->
+        <p class="spacey-ccard__desc">Smart loyalty systems, community ownership<br>and digital rewards.</p>
+      </div>
+
+      <!-- EDIT: card video (boomerang loop, muted autoplay) -->
+      <video class="spacey-ccard__video"
+             src="https://cdn.jsdelivr.net/gh/andrasgyalog/spac3y-webflow@v7/assets/tokens-loop.mp4"
+             autoplay loop muted playsinline preload="auto"
+             disablepictureinpicture aria-hidden="true"></video>
+    </article>
+
+  </div>
+</section>
+
+<style>
+  .spacey-clients{
+    background:#05060a;
+    padding:clamp(48px,8vw,110px) 0;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .spacey-clients__inner{ max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,48px); }
+
+  .spacey-seclabel--clients{
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:600; text-transform:uppercase;
+    font-size:clamp(11px,1.1vw,13px);
+    letter-spacing:.42em; color:#5b5bf5;
+    margin-bottom:clamp(14px,1.8vw,20px);
+  }
+  .spacey-clients__heading{
+    margin:0 0 clamp(26px,3.4vw,44px);
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:700;
+    font-size:clamp(24px,3.6vw,40px);
+    line-height:1.12; letter-spacing:-.025em;
+    color:#eef1f8;
+  }
+
+  /* ---------- Card ---------- */
+  .spacey-ccard{
+    --card-bg:#080a14;                 /* the solid the video fades into */
+    position:relative; overflow:hidden;
+    border-radius:20px;
+    background:var(--card-bg);
+    border:1px solid rgba(120,130,255,.18);
+    min-height:clamp(300px,34vw,420px);
+    display:flex; align-items:center;
+    isolation:isolate;
+  }
+
+  /* soft brand glow behind the video side */
+  .spacey-ccard__glow{
+    position:absolute; z-index:0; pointer-events:none;
+    right:-6%; top:50%; transform:translateY(-50%);
+    width:52%; aspect-ratio:1/1;
+    background:radial-gradient(circle, rgba(91,91,245,.34) 0%, rgba(91,91,245,.10) 45%, transparent 70%);
+    filter:blur(10px);
+  }
+
+  .spacey-ccard__body{
+    position:relative; z-index:2;
+    padding:clamp(28px,4vw,56px);
+    max-width:min(560px,58%);
+  }
+  .spacey-ccard__cat{
+    display:block; margin-bottom:clamp(10px,1.2vw,16px);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:600; font-size:clamp(14px,1.5vw,18px);
+    color:#7b7bff; letter-spacing:.005em;
+  }
+  .spacey-ccard__title{
+    margin:0 0 clamp(12px,1.5vw,20px);
+    font-family:'Clash Display','Archivo Black',Impact,sans-serif;
+    font-weight:700;
+    font-size:clamp(30px,4.4vw,52px);
+    line-height:1.04; letter-spacing:-.03em;
+    color:#fff;
+  }
+  .spacey-ccard__desc{
+    margin:0;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:clamp(14px,1.5vw,18px); line-height:1.5;
+    color:#aab2c6;
+  }
+
+  /* ---------- Masked video ---------- */
+  .spacey-ccard__video{
+    position:absolute; z-index:1; top:0; right:0; bottom:0;
+    height:100%; width:56%;
+    object-fit:cover; object-position:center;
+    pointer-events:none;
+    /* Fades the left edge to true transparency so the real card bg shows
+       through — seamless regardless of card colour/size. */
+    -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.25) 16%, rgba(0,0,0,.75) 38%, #000 62%);
+            mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.25) 16%, rgba(0,0,0,.75) 38%, #000 62%);
+  }
+
+  /* ---------- Mobile: video becomes a faded backdrop ---------- */
+  @media (max-width:720px){
+    .spacey-ccard{ min-height:auto; }
+    .spacey-ccard__body{ max-width:100%; padding:26px 22px 30px; }
+    .spacey-ccard__video{
+      width:100%; opacity:.5;
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 45%, #000 100%);
+              mask-image:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 45%, #000 100%);
+    }
+    .spacey-ccard__glow{ width:90%; right:-20%; }
+  }
+
+  /* Respect reduced-motion: hold a still frame instead of looping */
+  @media (prefers-reduced-motion:reduce){
+    .spacey-ccard__video{ animation:none; }
+  }
+</style>
+
+<script>
+/* Safari/iOS occasionally ignores the autoplay attribute until a play() call. */
+(function(){
+  var v = document.querySelector('.spacey-ccard__video');
+  if(!v) return;
+  var tryPlay = function(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); };
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ v.pause(); return; }
+  tryPlay();
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
+})();
+</script>
