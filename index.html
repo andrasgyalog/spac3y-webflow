@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPAC3Y — Preview</title>
+<title>SPAC3Y</title>
 <style>
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#05060a; }
@@ -102,7 +102,8 @@
       This is a concept preview of the main homepage hero banner. In the final version, text placement
       and responsive behavior will be fully adapted for mobile and tablet, and the text animation itself
       will be refined further — the current motion is just a sample to validate the direction, not
-      polished to final production quality.
+      polished to final production quality. Button animations and hover states were not developed
+      as part of this sample either.
     </p>
   </div>
 </section>
@@ -703,14 +704,14 @@
 </script>
 
 <!-- ============================================================= -->
-<!-- SPAC3Y — SECTION 4: "WHAT CLIENTS COME TO US FOR" CARD       -->
+<!-- SPAC3Y — SECTION 4: UI ELEMENT FOR THE                       -->
+<!--          "What clients usually come to us for" ZONE          -->
 <!-- Self-contained. Paste into a Webflow Embed block.            -->
 <!-- Requires: assets/tokens-loop.mp4  (seamless boomerang loop)  -->
 <!--                                                              -->
-<!-- The video is a normal opaque clip; its left edge is faded    -->
-<!-- into the card with a CSS mask (mask-image), so it blends     -->
-<!-- into the real card background instead of a baked-in colour.  -->
-<!-- It idles slowly and speeds up on hover (playbackRate ramp).  -->
+<!-- Video plays at normal speed, hard-edged, separated from the  -->
+<!-- copy by a thin white divider. On hover the two title words   -->
+<!-- centre themselves inside the title box one after the other.  -->
 <!-- ============================================================= -->
 
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -720,8 +721,8 @@
   <div class="spacey-clients__inner">
 
     <!-- EDIT: section label -->
-    <div class="spacey-seclabel spacey-seclabel--clients">Services block</div>
-    <!-- EDIT: section heading -->
+    <div class="spacey-seclabel spacey-seclabel--clients">Main page UI element</div>
+    <!-- EDIT: section heading (the zone this element belongs to) -->
     <h2 class="spacey-clients__heading">What clients usually come to us for</h2>
 
     <!-- ---------- CARD ---------- -->
@@ -731,13 +732,23 @@
       <div class="spacey-ccard__body">
         <!-- EDIT: card category -->
         <span class="spacey-ccard__cat">Web3 Experiences</span>
-        <!-- EDIT: card title -->
-        <h3 class="spacey-ccard__title"><span class="spacey-ccard__titlebox">Tokenized Loyalty</span></h3>
+
+        <!-- EDIT: card title — each word animates to centre on hover -->
+        <h3 class="spacey-ccard__title">
+          <span class="spacey-ccard__titlebox" id="spaceyTitleBox">
+            <span class="spacey-ccard__word">Tokenized</span>
+            <span class="spacey-ccard__word">Loyalty</span>
+          </span>
+        </h3>
+
         <!-- EDIT: card description -->
         <p class="spacey-ccard__desc">Smart loyalty systems, community ownership<br>and digital rewards.</p>
       </div>
 
-      <!-- EDIT: card video (boomerang loop, muted autoplay) -->
+      <!-- white partition between copy and video -->
+      <div class="spacey-ccard__divider" aria-hidden="true"></div>
+
+      <!-- EDIT: card video (boomerang loop, normal speed) -->
       <video class="spacey-ccard__video" id="spaceyCCardVideo"
              src="assets/tokens-loop.mp4"
              autoplay loop muted playsinline preload="auto"
@@ -749,6 +760,7 @@
 
 <style>
   .spacey-clients{
+    --video-w:46%;                     /* width of the video panel */
     background:#05060a;
     padding:clamp(48px,8vw,110px) 0;
     border-top:1px solid rgba(255,255,255,.12);
@@ -773,10 +785,9 @@
 
   /* ---------- Card ---------- */
   .spacey-ccard{
-    --card-bg:#080a14;                 /* the solid the video fades into */
+    --card-bg:#080a14;
     position:relative; overflow:hidden;
     border-radius:20px;
-    /* brand gradient washing in from the left over the base solid */
     background:
       linear-gradient(104deg,
         rgba(91,91,245,.26) 0%,
@@ -790,7 +801,6 @@
     isolation:isolate; outline:none;
     transition:border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.2,.7,.2,1);
   }
-  /* hover: light rim + glow */
   .spacey-ccard:hover, .spacey-ccard:focus-visible{
     border-color:rgba(180,190,255,.55);
     box-shadow:
@@ -803,27 +813,24 @@
 
   /* accent hairline down the left edge */
   .spacey-ccard::before{
-    content:''; position:absolute; z-index:2; left:0; top:0; bottom:0; width:2px;
+    content:''; position:absolute; z-index:4; left:0; top:0; bottom:0; width:2px;
     background:linear-gradient(180deg, transparent, rgba(123,123,255,.9) 28%, rgba(123,123,255,.9) 72%, transparent);
     opacity:.5; transition:opacity .35s ease;
   }
   .spacey-ccard:hover::before{ opacity:1; }
 
-  /* soft brand glow behind the video side */
   .spacey-ccard__glow{
     position:absolute; z-index:0; pointer-events:none;
     right:-6%; top:50%; transform:translateY(-50%);
     width:52%; aspect-ratio:1/1;
     background:radial-gradient(circle, rgba(91,91,245,.34) 0%, rgba(91,91,245,.10) 45%, transparent 70%);
     filter:blur(10px);
-    transition:opacity .35s ease;
   }
-  .spacey-ccard:hover .spacey-ccard__glow{ opacity:1.35; }
 
   .spacey-ccard__body{
     position:relative; z-index:3;
     padding:clamp(28px,4vw,56px);
-    max-width:min(560px,58%);
+    width:calc(100% - var(--video-w));
   }
   .spacey-ccard__cat{
     display:block; margin-bottom:clamp(12px,1.4vw,18px);
@@ -831,18 +838,19 @@
     font-weight:600; font-size:clamp(14px,1.5vw,18px);
     color:#7b7bff; letter-spacing:.005em;
   }
-  /* title sits in its own outlined box */
+
+  /* ---------- Title box + word centring ---------- */
   .spacey-ccard__title{ margin:0 0 clamp(14px,1.6vw,22px); }
   .spacey-ccard__titlebox{
-    display:inline-block;
-    padding:.22em .46em .28em;
+    display:block;
+    padding:.20em .46em .26em;
     border:1px solid rgba(255,255,255,.20);
     border-radius:12px;
     background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
     font-family:'Clash Display','Archivo Black',Impact,sans-serif;
     font-weight:700;
-    font-size:clamp(28px,4.1vw,48px);
-    line-height:1.06; letter-spacing:-.01em;
+    font-size:clamp(26px,3.6vw,44px);
+    line-height:1.10; letter-spacing:-.01em;
     color:#fff;
     transition:border-color .35s ease, background .35s ease, box-shadow .35s ease;
   }
@@ -851,6 +859,24 @@
     background:linear-gradient(180deg, rgba(123,123,255,.16), rgba(255,255,255,.03));
     box-shadow:0 0 26px rgba(91,91,245,.30);
   }
+  /* each word is its own row so it can travel independently */
+  .spacey-ccard__word{
+    display:block; width:max-content;
+    transform:translateX(0);
+    /* ease-out (expo-ish): quick departure, long soft landing */
+    transition:transform .62s cubic-bezier(.16,1,.3,1);
+  }
+  /* --center is measured in JS = (box inner width - word width) / 2 */
+  .spacey-ccard:hover .spacey-ccard__word,
+  .spacey-ccard:focus-visible .spacey-ccard__word{
+    transform:translateX(var(--center,0px));
+  }
+  /* second word follows the first */
+  .spacey-ccard:hover .spacey-ccard__word:nth-child(2),
+  .spacey-ccard:focus-visible .spacey-ccard__word:nth-child(2){
+    transition-delay:.13s;
+  }
+
   .spacey-ccard__desc{
     margin:0;
     font-family:'Helvetica Neue',Arial,sans-serif;
@@ -858,29 +884,42 @@
     color:#aab2c6;
   }
 
-  /* ---------- Masked video ---------- */
+  /* ---------- White partition ---------- */
+  .spacey-ccard__divider{
+    position:absolute; z-index:3; right:var(--video-w);
+    top:9%; bottom:9%; width:1px;
+    background:linear-gradient(180deg,
+      transparent 0%,
+      rgba(255,255,255,.35) 12%,
+      rgba(255,255,255,.85) 50%,
+      rgba(255,255,255,.35) 88%,
+      transparent 100%);
+    transition:box-shadow .35s ease, opacity .35s ease;
+    opacity:.9;
+  }
+  .spacey-ccard:hover .spacey-ccard__divider{
+    opacity:1;
+    box-shadow:0 0 14px rgba(255,255,255,.55);
+  }
+
+  /* ---------- Video (hard edge, normal speed) ---------- */
   .spacey-ccard__video{
-    position:absolute; z-index:1; top:0; right:0; bottom:0;
-    height:100%; width:50%;
+    position:absolute; z-index:2; top:0; right:0; bottom:0;
+    height:100%; width:var(--video-w);
     object-fit:cover; object-position:center;
     pointer-events:none;
-    /* Fades the left edge to true transparency so the real card bg shows
-       through — seamless regardless of card colour/size.
-       Stays clear of the copy: barely visible until ~50%, solid past 78%. */
-    -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.12) 26%, rgba(0,0,0,.55) 52%, #000 78%);
-            mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,.12) 26%, rgba(0,0,0,.55) 52%, #000 78%);
-    transition:opacity .35s ease;
   }
-  .spacey-ccard:hover .spacey-ccard__video{ opacity:1; }
 
-  /* ---------- Mobile: video becomes a faded backdrop ---------- */
+  /* ---------- Mobile: stack, divider becomes horizontal ---------- */
   @media (max-width:720px){
-    .spacey-ccard{ min-height:auto; }
-    .spacey-ccard__body{ max-width:100%; padding:26px 22px 30px; }
+    .spacey-ccard{ min-height:auto; display:block; }
+    .spacey-ccard__body{ width:100%; padding:26px 22px 30px; }
     .spacey-ccard__video{
-      width:100%; opacity:.5;
-      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 45%, #000 100%);
-              mask-image:linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.5) 45%, #000 100%);
+      position:relative; width:100%; height:220px; display:block;
+    }
+    .spacey-ccard__divider{
+      right:auto; left:8%; width:84%; top:auto; bottom:220px; height:1px;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.75) 50%, transparent);
     }
     .spacey-ccard__glow{ width:90%; right:-20%; }
   }
@@ -889,40 +928,43 @@
 <script>
 (function(){
   var card = document.getElementById('spaceyCCard');
+  var box  = document.getElementById('spaceyTitleBox');
   var v    = document.getElementById('spaceyCCardVideo');
-  if(!card || !v) return;
 
-  var IDLE = 0.45;                 // EDIT: resting speed
-  var HOT  = 1.7;                  // EDIT: hover speed
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  var want = IDLE, running = false;
-
-  function apply(r){ try{ v.playbackRate = r; }catch(e){} }
-
-  /* Ramp the rate instead of snapping it — a hard jump to 1.7x reads as a glitch. */
-  function loop(){
-    var cur = v.playbackRate || IDLE;
-    var d = want - cur;
-    if(Math.abs(d) < 0.02){ apply(want); running = false; return; }
-    apply(cur + d * 0.12);
-    requestAnimationFrame(loop);
+  /* --- video: normal speed, just make sure it actually plays --- */
+  if(v){
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){ v.pause(); }
+    else{
+      var tryPlay = function(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); };
+      tryPlay();
+      document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
+    }
   }
-  function kick(){ if(!running){ running = true; requestAnimationFrame(loop); } }
 
-  function tryPlay(){ var p = v.play(); if(p && p.catch) p.catch(function(){}); }
+  /* --- measure how far each title word must travel to sit centred --- */
+  if(!box) return;
+  var words = box.querySelectorAll('.spacey-ccard__word');
 
-  if(reduce){ v.pause(); return; }
+  function measure(){
+    var cs = window.getComputedStyle(box);
+    var inner = box.clientWidth
+              - parseFloat(cs.paddingLeft || 0)
+              - parseFloat(cs.paddingRight || 0);
+    Array.prototype.forEach.call(words, function(w){
+      var off = (inner - w.offsetWidth) / 2;
+      if(!isFinite(off) || off < 0) off = 0;
+      w.style.setProperty('--center', off.toFixed(1) + 'px');
+    });
+  }
 
-  apply(IDLE);
-  tryPlay();
-  v.addEventListener('loadedmetadata', function(){ apply(want); });
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden) tryPlay(); });
-
-  card.addEventListener('mouseenter', function(){ want = HOT;  kick(); });
-  card.addEventListener('mouseleave', function(){ want = IDLE; kick(); });
-  card.addEventListener('focus',      function(){ want = HOT;  kick(); });
-  card.addEventListener('blur',       function(){ want = IDLE; kick(); });
+  measure();
+  window.addEventListener('resize', measure);
+  // widths shift once the display font swaps in
+  if(document.fonts && document.fonts.ready && document.fonts.ready.then){
+    document.fonts.ready.then(measure).catch(function(){});
+  }
+  window.addEventListener('load', measure);
 })();
 </script>
 
